@@ -60,7 +60,7 @@ public class Client {
 		int port = DEFAULT_PORT;
 		if (pos != -1) {
 			host = hostPort.substring(0, pos);
-			String portStr = hostPort.substring(pos);
+			String portStr = hostPort.substring(pos + 1);
 			if (isEmpty(portStr)) {
 				throw new IllegalArgumentException(hostPort + " is not a valid address like host:port");
 			}
