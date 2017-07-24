@@ -11,9 +11,9 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.xpack.client.PreBuiltXPackTransportClient;
 
-public class Client {
+public class Base {
 	
-	private TransportClient client = null;
+	private TransportClient transportClient = null;
 	private Boolean paramClientTransportSniff = null;
 	private Integer paramClientTransportPingTimeout = null;
 	private Integer paramClientTransportNodeSamplerInterval = null;
@@ -76,7 +76,7 @@ public class Client {
 			throw new IllegalStateException("No hosts set!");
 		} else {
 			for (String host : hostList) {
-				client.addTransportAddress(getAddress(host));
+				transportClient.addTransportAddress(getAddress(host));
 			}
 		}
 	}
@@ -104,7 +104,7 @@ public class Client {
 			builder.put("xpack.security.user", user + ":" + password);
 		}
 		Settings settings = builder.build();
-		client = new PreBuiltXPackTransportClient(settings);
+		transportClient = new PreBuiltXPackTransportClient(settings);
 		configureAddresses();
 	}
 
@@ -142,8 +142,8 @@ public class Client {
 		}
 	}
 
-	public TransportClient getClient() {
-		return client;
+	public TransportClient getTransportClient() {
+		return transportClient;
 	}
 
 	public String getUser() {

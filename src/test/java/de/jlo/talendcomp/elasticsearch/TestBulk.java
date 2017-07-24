@@ -1,6 +1,4 @@
 package de.jlo.talendcomp.elasticsearch;
-import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
-
 import java.io.IOException;
 import java.util.Date;
 
@@ -8,17 +6,18 @@ import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.update.UpdateRequest;
+import org.elasticsearch.common.xcontent.XContentFactory;
 import org.junit.Test;
 
-public class TestBulk extends Client {
+public class TestBulk extends Base {
 
 	@Test
 	public void testBulkImport() throws IOException {
-		BulkRequestBuilder bulkRequest = getClient().prepareBulk();
+		BulkRequestBuilder bulkRequest = getTransportClient().prepareBulk();
 
 		// either use client#prepare, or use Requests# to directly build index/delete requests
-		bulkRequest.add(getClient().prepareIndex("twitter", "tweet", "1")
-		        .setSource(jsonBuilder()
+		bulkRequest.add(getTransportClient().prepareIndex("twitter", "tweet", "1")
+		        .setSource(XContentFactory.jsonBuilder()
 		                    .startObject()
 		                        .field("user", "kimchy")
 		                        .field("postDate", new Date())
@@ -27,8 +26,8 @@ public class TestBulk extends Client {
 		                  )
 		        );
 
-		bulkRequest.add(getClient().prepareIndex("twitter", "tweet", "2")
-		        .setSource(jsonBuilder()
+		bulkRequest.add(getTransportClient().prepareIndex("twitter", "tweet", "2")
+		        .setSource(XContentFactory.jsonBuilder()
 		                    .startObject()
 		                        .field("user", "kimchy")
 		                        .field("postDate", new Date())
@@ -45,31 +44,31 @@ public class TestBulk extends Client {
 	
 	public void testUpsert() throws Exception {
 		IndexRequest indexRequest = new IndexRequest("index", "type", "1")
-		        .source(jsonBuilder()
+		        .source(XContentFactory.jsonBuilder()
 		            .startObject()
 		                .field("name", "Joe Smith")
 		                .field("gender", "male")
 		            .endObject());
 		UpdateRequest updateRequest = new UpdateRequest("index", "type", "1")
-		        .doc(jsonBuilder()
+		        .doc(XContentFactory.jsonBuilder()
 		            .startObject()
 		                .field("gender", "male")
 		            .endObject())
 		        .upsert(indexRequest);              
-		getClient().update(updateRequest).get();
+		getTransportClient().update(updateRequest).get();
 	}
 	
 	public void testUpsertBulk() throws Exception {
-		BulkRequestBuilder bulkRequest = getClient().prepareBulk();
+		BulkRequestBuilder bulkRequest = getTransportClient().prepareBulk();
 
 		IndexRequest indexRequest = new IndexRequest("index", "type", "1")
-		        .source(jsonBuilder()
+		        .source(XContentFactory.jsonBuilder()
 		            .startObject()
 		                .field("name", "Joe Smith")
 		                .field("gender", "male")
 		            .endObject());
 		UpdateRequest updateRequest = new UpdateRequest("index", "type", "1")
-		        .doc(jsonBuilder()
+		        .doc(XContentFactory.jsonBuilder()
 		            .startObject()
 		                .field("gender", "male")
 		            .endObject())
