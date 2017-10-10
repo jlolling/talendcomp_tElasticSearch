@@ -6,17 +6,26 @@ import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.update.UpdateRequest;
+import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.xcontent.XContentFactory;
 import org.junit.Test;
 
-public class TestBulk extends Base {
+public class TestBulk {
+	
+	private TransportClient transportClient = null;
+	
+	public void setupTransportClient() throws Exception {
+		Base client = new Base();
+		client.setNodes("camundadev02.gvl.local:9200");
+		client.initialize();
+	}
 
 	@Test
 	public void testBulkImport() throws IOException {
-		BulkRequestBuilder bulkRequest = getTransportClient().prepareBulk();
+		BulkRequestBuilder bulkRequest = transportClient.prepareBulk();
 
 		// either use client#prepare, or use Requests# to directly build index/delete requests
-		bulkRequest.add(getTransportClient().prepareIndex("twitter", "tweet", "1")
+		bulkRequest.add(transportClient.prepareIndex("twitter", "tweet", "1")
 		        .setSource(XContentFactory.jsonBuilder()
 		                    .startObject()
 		                        .field("user", "kimchy")
@@ -26,7 +35,7 @@ public class TestBulk extends Base {
 		                  )
 		        );
 
-		bulkRequest.add(getTransportClient().prepareIndex("twitter", "tweet", "2")
+		bulkRequest.add(transportClient.prepareIndex("twitter", "tweet", "2")
 		        .setSource(XContentFactory.jsonBuilder()
 		                    .startObject()
 		                        .field("user", "kimchy")
@@ -55,11 +64,11 @@ public class TestBulk extends Base {
 		                .field("gender", "male")
 		            .endObject())
 		        .upsert(indexRequest);              
-		getTransportClient().update(updateRequest).get();
+		transportClient.update(updateRequest).get();
 	}
 	
 	public void testUpsertBulk() throws Exception {
-		BulkRequestBuilder bulkRequest = getTransportClient().prepareBulk();
+		BulkRequestBuilder bulkRequest = transportClient.prepareBulk();
 
 		IndexRequest indexRequest = new IndexRequest("index", "type", "1")
 		        .source(XContentFactory.jsonBuilder()

@@ -18,14 +18,21 @@ public class IndexOutput {
 	private int currentRowNum = 0;
 	private int batchSize = 1000;
 	private List<OneValue> currentRow = new ArrayList<OneValue>();
-	private XContentBuilder builderIndex = null;
-	private XContentBuilder builderUpdate = null;
+	private XContentBuilder insertContentBuilder = null;
+	private XContentBuilder updateContentBuilder = null;
 	private String index = null;
-	private String type = null;
+	private String objectType = null;
+	
+	public IndexOutput(Base base) {
+		if (base == null) {
+			throw new IllegalArgumentException("Base client cannot be null");
+		}
+		this.base = base;
+	}
 	
 	public void initialize() throws Exception {
 		bulkRequest = base.getTransportClient().prepareBulk();
-		builderIndex = XContentFactory.jsonBuilder();
+		insertContentBuilder = XContentFactory.jsonBuilder();
 	}
 	
 	public void setValue(String field, Object value, boolean iskey) {
@@ -37,27 +44,27 @@ public class IndexOutput {
 	}
 	
 	public void upsert() throws Exception {
-		builderIndex.startObject();
+		insertContentBuilder.startObject();
 		String key = null;
 		for (OneValue value : currentRow) {
-			builderIndex.field(value.getField(), value.getValue());
+			insertContentBuilder.field(value.getField(), value.getValue());
 			if (value.isKey()) {
 				key = String.valueOf(value.getValue());
 			}
 		}
-		builderIndex.endObject();
+		insertContentBuilder.endObject();
 		if (key == null) {
 			throw new IllegalStateException("No value has been set as key. Upsert expects one field set as key field.");
 		}
-		IndexRequest indexRequest = new IndexRequest(index, type, key)
-				.source(builderIndex);
-		builderUpdate.startObject();
+		IndexRequest indexRequest = new IndexRequest(index, objectType, key)
+				.source(insertContentBuilder);
+		updateContentBuilder.startObject();
 		for (OneValue value : currentRow) {
-			builderUpdate.field(value.getField(), value.getValue());
+			updateContentBuilder.field(value.getField(), value.getValue());
 		}
-		builderUpdate.endObject();
-		UpdateRequest updateRequest = new UpdateRequest(index, type, key)
-				.doc(builderUpdate)
+		updateContentBuilder.endObject();
+		UpdateRequest updateRequest = new UpdateRequest(index, objectType, key)
+				.doc(updateContentBuilder)
 				.upsert(indexRequest);
 		bulkRequest.add(updateRequest);
 		currentRowNum++;
@@ -67,8 +74,7 @@ public class IndexOutput {
 				
 				@Override
 				public void onResponse(BulkResponse response) {
-					// TODO Auto-generated method stub
-
+					
 				}
 				
 				@Override
@@ -91,23 +97,28 @@ public class IndexOutput {
 		this.index = index.trim();
 	}
 
-	public String getType() {
-		return type;
+	public String getObjectType() {
+		return objectType;
 	}
 
-	public void setType(String type) {
-		if (type == null || type.trim().isEmpty()) {
-			throw new IllegalArgumentException("type cannot be null or empty");
+	public void setObjectType(String objectType) {
+		if (objectType == null || objectType.trim().isEmpty()) {
+			throw new IllegalArgumentException("objectType cannot be null or empty");
 		}
-		this.type = type.trim();
+		this.objectType = objectType.trim();
 	}
 
 	public int getBatchSize() {
 		return batchSize;
 	}
 
-	public void setBatchSize(int batchSize) {
-		this.batchSize = batchSize;
+	public void setBatchSize(Integer batchSize) {
+		if (batchSize != null) {
+			if (batchSize == 0) {
+				throw new IllegalArgumentException("batchSize cannot be 0");
+			}
+			this.batchSize = batchSize;
+		}
 	}
 	
 }

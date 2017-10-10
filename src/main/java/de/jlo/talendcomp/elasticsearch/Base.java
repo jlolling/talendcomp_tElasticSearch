@@ -41,7 +41,7 @@ public class Base {
 	 * Set the hosts in form of semicolon delimited list of hosts
 	 * @param hosts host1:port1;host2;host3:port3
 	 */
-	public void setHosts(String hosts) {
+	public void setNodes(String hosts) {
 		hostList = new ArrayList<String>();
 		if (isEmpty(hosts) == false) {
 			StringTokenizer st = new StringTokenizer(hosts, ";,|");
@@ -81,7 +81,6 @@ public class Base {
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
 	public void initialize() throws Exception {
 		org.elasticsearch.common.settings.Settings.Builder builder = Settings.builder();
 		if (paramClientTransportSniff != null) {
@@ -142,6 +141,14 @@ public class Base {
 		}
 	}
 
+	public boolean isUseSSL() {
+		return useSSL;
+	}
+
+	public void setUseSSL(boolean useSSL) {
+		this.useSSL = useSSL;
+	}
+
 	public TransportClient getTransportClient() {
 		return transportClient;
 	}
@@ -154,12 +161,12 @@ public class Base {
 		this.user = user;
 	}
 
-	public boolean isUseSSL() {
-		return useSSL;
+	public String getPassword() {
+		return password;
 	}
 
-	public void setUseSSL(boolean useSSL) {
-		this.useSSL = useSSL;
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 }
