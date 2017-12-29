@@ -8,8 +8,11 @@ import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.update.UpdateRequest;
+import org.elasticsearch.common.bytes.BytesArray;
+import org.elasticsearch.common.bytes.BytesReference;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
+import org.elasticsearch.common.xcontent.XContentType;
 
 public class IndexOutput {
 	
@@ -18,6 +21,8 @@ public class IndexOutput {
 	private int currentRowNum = 0;
 	private int batchSize = 1000;
 	private List<OneValue> currentRow = new ArrayList<OneValue>();
+	private Object rowContent = null;
+	private String key = null;
 	private XContentBuilder insertContentBuilder = null;
 	private XContentBuilder updateContentBuilder = null;
 	private String index = null;
@@ -35,25 +40,50 @@ public class IndexOutput {
 		insertContentBuilder = XContentFactory.jsonBuilder();
 	}
 	
+	public void setValue(Object content, Object key) {
+		if (key == null) {
+			throw new IllegalArgumentException("key cannot be null");
+		}
+		this.rowContent = content;
+		this.key = String.valueOf(key);
+	}
+	
 	public void setValue(String field, Object value, boolean iskey) {
 		OneValue v = new OneValue();
 		v.setField(field);
 		v.setValue(value);
 		v.setKey(iskey);
 		currentRow.add(v);
+		rowContent = null;
+	}
+	
+	private BytesReference createBytesReferences(Object value) {
+		if (value instanceof String) {
+			byte[] array = ((String) value).getBytes();
+			return new BytesArray(array);
+		} else if (value != null) {
+			byte[] array = value.toString().getBytes();
+			return new BytesArray(array);
+		} else {
+			return null;
+		}
 	}
 	
 	public void upsert() throws Exception {
-		insertContentBuilder.startObject();
-		String key = null;
-		for (OneValue value : currentRow) {
-			insertContentBuilder.field(value.getField(), value.getValue());
-			if (value.isKey()) {
-				key = String.valueOf(value.getValue());
+		key = null;
+		if (rowContent != null) {
+			insertContentBuilder.rawValue(createBytesReferences(rowContent), XContentType.JSON);
+		} else {
+			insertContentBuilder.startObject();
+			for (OneValue value : currentRow) {
+				insertContentBuilder.field(value.getField(), value.getValue());
+				if (value.isKey()) {
+					key = String.valueOf(value.getValue());
+				}
 			}
+			insertContentBuilder.endObject();
 		}
-		insertContentBuilder.endObject();
-		if (key == null) {
+		if (key == null || key.trim().isEmpty()) {
 			throw new IllegalStateException("No value has been set as key. Upsert expects one field set as key field.");
 		}
 		IndexRequest indexRequest = new IndexRequest(index, objectType, key)
