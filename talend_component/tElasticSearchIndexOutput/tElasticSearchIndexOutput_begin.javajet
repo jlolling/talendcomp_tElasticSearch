@@ -3,61 +3,44 @@
 		org.talend.core.model.process.INode 
 		org.talend.core.model.process.ElementParameterParser 
 		org.talend.designer.codegen.config.CodeGeneratorArgument
-		java.util.List
-		java.util.Map
 	" 
 %>
 <% 
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode) codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
-	IConnection conn = null;
-	List<? extends IConnection> inConns = NodeUtil.getIncomingConnections(node, IConnectionCategory.DATA);
-	if (inConns.size() > 0) {
-		conn = inConns.get(0);
-	}
-	List<IMetadataColumn> listColumns = new ArrayList<IMetadataColumn>(); // dummy
-	List<IMetadataTable> metadatas = node.getMetadataList();
-	if (metadatas != null && metadatas.size() > 0) {
-    	IMetadataTable metadata = metadatas.get(0);
-    	if (metadata != null) {
-    		listColumns = metadata.getListColumns();
-		}
-	}
 	String nodes = ElementParameterParser.getValue(node, "__NODES__");
 	if (nodes == null || nodes.trim().isEmpty()) {
 		nodes = "null";
 	}
-    String index = ElementParameterParser.getValue(node, "__INDEX__");
-    if (index == null || index.trim().isEmpty()) {
+   String index = ElementParameterParser.getValue(node, "__INDEX__");
+   if (index == null || index.trim().isEmpty()) {
     	index = "null";
-    }
+   }
 	String objectType = ElementParameterParser.getValue(node, "__OBJECT_TYPE__");
 	if (objectType == null || objectType.trim().isEmpty()) {
 		objectType = "null";
 	}
-	String outputOperation = ElementParameterParser.getValue(node, "__OUTPUT_OPERATION__");
-	List<Map<String, String>> configList = (List<Map<String,String>>) ElementParameterParser.getObjectValue(node, "__COLUMN_CONFIG__");
 	String batchSize = ElementParameterParser.getValue(node, "__BATCH_SIZE__");
 	if (batchSize == null || batchSize.trim().isEmpty()) {
 		batchSize = "null";
 	}
-	boolean log4jEnabled = "true".equals(org.talend.core.model.process.ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__")) && 
-   							"JOBLET".equals(node.getComponent().getComponentType().toString()) == false;
+	boolean log4jEnabled = "true".equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 %>
-	de.jlo.talendcomp.elasticsearch.Base <%=cid%>_client = new de.jlo.talendcomp.elasticsearch.Base();
+	de.jlo.talendcomp.elasticsearch.ElasticClient client_<%=cid%> = new de.jlo.talendcomp.elasticsearch.ElasticClient();
 	try {
-		<%=cid%>_client.setNodes(<%=nodes%>);
-		<%=cid%>_client.initialize();
+		client_<%=cid%>.setNodes(<%=nodes%>, null);
+		client_<%=cid%>.setupClient();
 	} catch (Exception e) {
-		String message = "Connect to ElasticSearch failed: " + e.getMessage();
+		String message = "Setup ElasticSearch client failed: " + e.getMessage();
 		globalMap.put("<%=cid%>_ERROR_MESSAGE", message);
 <%	if (log4jEnabled) { %>
 		log.error(message, e);
 <%	} %>
 		throw e;
 	}
-	de.jlo.talendcomp.elasticsearch.IndexOutput <%=cid%> = new de.jlo.talendcomp.elasticsearch.IndexOutput(<%=cid%>_client);
+	de.jlo.talendcomp.elasticsearch.IndexOutput <%=cid%> = new de.jlo.talendcomp.elasticsearch.IndexOutput(client_<%=cid%>);
+	globalMap.put("<%=cid%>", <%=cid%>);
 	try {
 		<%=cid%>.setIndex(<%=index%>);
 		<%=cid%>.setObjectType(<%=objectType%>);

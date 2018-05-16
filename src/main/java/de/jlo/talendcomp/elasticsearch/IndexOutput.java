@@ -1,10 +1,10 @@
 package de.jlo.talendcomp.elasticsearch;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.nio.charset.Charset;
 
-import org.elasticsearch.action.ActionListener;
-import org.elasticsearch.action.bulk.BulkRequestBuilder;
+import org.apache.http.message.BasicHeader;
+import org.elasticsearch.action.bulk.BulkItemResponse;
+import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.update.UpdateRequest;
@@ -16,53 +16,59 @@ import org.elasticsearch.common.xcontent.XContentType;
 
 public class IndexOutput {
 	
-	private Base base = null;
-	private BulkRequestBuilder bulkRequest = null;
+	private ElasticClient elasticClient = null;
+	private BulkRequest bulkRequest = null;
 	private int currentRowNum = 0;
 	private int batchSize = 1000;
-	private List<OneValue> currentRow = new ArrayList<OneValue>();
-	private Object rowContent = null;
-	private String key = null;
 	private XContentBuilder insertContentBuilder = null;
 	private XContentBuilder updateContentBuilder = null;
 	private String index = null;
 	private String objectType = null;
 	
-	public IndexOutput(Base base) {
-		if (base == null) {
-			throw new IllegalArgumentException("Base client cannot be null");
+	public IndexOutput(ElasticClient client) {
+		if (client == null) {
+			throw new IllegalArgumentException("Client cannot be null");
 		}
-		this.base = base;
+		this.elasticClient = client;
 	}
 	
 	public void initialize() throws Exception {
-		bulkRequest = base.getTransportClient().prepareBulk();
 		insertContentBuilder = XContentFactory.jsonBuilder();
+		updateContentBuilder = XContentFactory.jsonBuilder();
+		bulkRequest = null;
 	}
 	
-	public void setValue(Object content, Object key) {
+	/**
+	 * adds a json document
+	 * @param json the document to index
+	 * @param key the key of the document
+	 */
+	public void addDocument(Object key, Object json) throws Exception {
 		if (key == null) {
-			throw new IllegalArgumentException("key cannot be null");
+			throw new Exception("Add json failed: Key cannot be null");
 		}
-		this.rowContent = content;
-		this.key = String.valueOf(key);
-	}
-	
-	public void setValue(String field, Object value, boolean iskey) {
-		OneValue v = new OneValue();
-		v.setField(field);
-		v.setValue(value);
-		v.setKey(iskey);
-		currentRow.add(v);
-		rowContent = null;
+		String id = String.valueOf(key);
+		BytesReference br = createBytesReferences(json);
+		insertContentBuilder.rawValue(br, XContentType.JSON);
+		IndexRequest indexRequest = new IndexRequest(index, objectType, id)
+				.source(insertContentBuilder);
+		updateContentBuilder.rawValue(br, XContentType.JSON);
+		UpdateRequest updateRequest = new UpdateRequest(index, objectType, id)
+				.doc(updateContentBuilder)
+				.upsert(indexRequest);
+		if (bulkRequest == null) {
+			bulkRequest = new BulkRequest();
+		}
+		bulkRequest.add(updateRequest);
+		currentRowNum++;
 	}
 	
 	private BytesReference createBytesReferences(Object value) {
 		if (value instanceof String) {
-			byte[] array = ((String) value).getBytes();
+			byte[] array = ((String) value).getBytes(Charset.forName("UTF-8"));
 			return new BytesArray(array);
 		} else if (value != null) {
-			byte[] array = value.toString().getBytes();
+			byte[] array = value.toString().getBytes(Charset.forName("UTF-8"));
 			return new BytesArray(array);
 		} else {
 			return null;
@@ -70,49 +76,37 @@ public class IndexOutput {
 	}
 	
 	public void upsert() throws Exception {
-		key = null;
-		if (rowContent != null) {
-			insertContentBuilder.rawValue(createBytesReferences(rowContent), XContentType.JSON);
-		} else {
-			insertContentBuilder.startObject();
-			for (OneValue value : currentRow) {
-				insertContentBuilder.field(value.getField(), value.getValue());
-				if (value.isKey()) {
-					key = String.valueOf(value.getValue());
+		upsert(false);
+	}
+	
+	public void finalUpsert() throws Exception {
+		upsert(true);
+	}
+	
+	/**
+	 * Adds the content and key (given by the setValue method) to the bulk request and if the 
+	 * number of batches is reached, the bulk request will be executed
+	 * @param finalRequest true = run the request with the last values at the end of the flow
+	 * @throws Exception
+	 */
+	public void upsert(boolean finalRequest) throws Exception {
+		if (bulkRequest != null && (finalRequest || (currentRowNum % batchSize == 0))) {
+			BulkResponse bulkResponse = elasticClient.executeBulk(bulkRequest, new BasicHeader("Content-Type", "application/x-ndjson"));
+			if (bulkResponse.hasFailures()) {
+				StringBuilder sb = new StringBuilder();
+				sb.append("Upsert failed for:");
+				BulkItemResponse[] birs = bulkResponse.getItems();
+				for (BulkItemResponse br : birs) {
+					if (br.getFailureMessage() != null) {
+						sb.append("\nId: ");
+						sb.append(br.getId());
+						sb.append(" failed: ");
+						sb.append(br.getFailureMessage());
+					}
 				}
+				throw new Exception(sb.toString());
 			}
-			insertContentBuilder.endObject();
-		}
-		if (key == null || key.trim().isEmpty()) {
-			throw new IllegalStateException("No value has been set as key. Upsert expects one field set as key field.");
-		}
-		IndexRequest indexRequest = new IndexRequest(index, objectType, key)
-				.source(insertContentBuilder);
-		updateContentBuilder.startObject();
-		for (OneValue value : currentRow) {
-			updateContentBuilder.field(value.getField(), value.getValue());
-		}
-		updateContentBuilder.endObject();
-		UpdateRequest updateRequest = new UpdateRequest(index, objectType, key)
-				.doc(updateContentBuilder)
-				.upsert(indexRequest);
-		bulkRequest.add(updateRequest);
-		currentRowNum++;
-		currentRow.clear();
-		if (currentRowNum % batchSize == 0) {
-			bulkRequest.execute(new ActionListener<BulkResponse>() {
-				
-				@Override
-				public void onResponse(BulkResponse response) {
-					
-				}
-				
-				@Override
-				public void onFailure(Exception e) {
-					// TODO Auto-generated method stub
-					
-				}
-			});
+			bulkRequest = null;
 		}
 	}
 
@@ -149,6 +143,10 @@ public class IndexOutput {
 			}
 			this.batchSize = batchSize;
 		}
+	}
+	
+	public int getCountUpserts() {
+		return currentRowNum;
 	}
 	
 }

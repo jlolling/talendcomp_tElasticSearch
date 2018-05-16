@@ -1,0 +1,44 @@
+<%@ jet 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.ElementParameterParser 
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.IConnection
+		org.talend.core.model.process.IConnectionCategory
+		org.talend.core.model.utils.NodeUtil
+		java.util.List
+	" 
+%>
+<% 
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode) codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+	IConnection conn = null;
+	List<? extends IConnection> inConns = NodeUtil.getIncomingConnections(node, IConnectionCategory.DATA);
+	if (inConns.size() > 0) {
+		conn = inConns.get(0);
+	}
+	boolean log4jEnabled = "true".equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+	if (conn != null) { %>
+	try {
+		<%=cid%>.addDocument(<%=conn.getName()%>.key, <%=conn.getName()%>.json);
+	} catch (Exception <%=cid%>_addex) {
+		String message = "Add document failed: " + <%=cid%>_addex.getMessage();
+		globalMap.put("<%=cid%>_ERROR_MESSAGE", message);
+<%	if (log4jEnabled) { %>
+		log.error(message, <%=cid%>_addex);
+<%	} %>
+		throw <%=cid%>_addex;
+	}
+	try {
+		<%=cid%>.upsert();
+	} catch (Exception <%=cid%>_upex) {
+		String message = "Upsert request failed: " + <%=cid%>_upex.getMessage();
+		globalMap.put("<%=cid%>_ERROR_MESSAGE", message);
+<%	if (log4jEnabled) { %>
+		log.error(message, <%=cid%>_upex);
+<%	} %>
+		throw <%=cid%>_upex;
+	}
+<%	} %>
+	

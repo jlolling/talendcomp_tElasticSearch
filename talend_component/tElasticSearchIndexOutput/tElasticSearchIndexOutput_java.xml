@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <COMPONENT> 
-  <HEADER AUTHOR="Jan Lolling" COMPATIBILITY="ALL" DATA_AUTO_PROPAGATE="true" HAS_CONDITIONAL_OUTPUTS="false" PLATEFORM="ALL" RELEASE_DATE="20170701" SERIAL="" STARTABLE="false" STATUS="PROD" VERSION="8.9"> 
+  <HEADER AUTHOR="Jan Lolling" COMPATIBILITY="ALL" DATA_AUTO_PROPAGATE="true" HAS_CONDITIONAL_OUTPUTS="false" PLATEFORM="ALL" RELEASE_DATE="20180516" SERIAL="" STARTABLE="false" STATUS="PROD" VERSION="0.9"> 
     <SIGNATURE/> 
   </HEADER>  
   <FAMILIES> 
@@ -18,56 +18,63 @@
     <CONNECTOR CTYPE="RUN_IF"/> 
   </CONNECTORS>  
   <PARAMETERS> 
-    <PARAMETER FIELD="TEXT" NAME="NODES" NUM_ROW="10" REQUIRED="true" GROUP="TRANSPORT_CLIENT"> 
+    <PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="10"> 
+      <TABLE READONLY="true"> 
+        <COLUMN NAME="key" TYPE="id_Object" READONLY="true" CUSTOM="true" NULLABLE="false" COMMENT="The id for the document"/>  
+        <COLUMN NAME="json" TYPE="id_Object" READONLY="true" CUSTOM="true" NULLABLE="false" COMMENT="JSON document to add"/> 
+      </TABLE> 
+    </PARAMETER>  
+    <PARAMETER FIELD="TEXT" NAME="NODES" NUM_ROW="20" REQUIRED="true" GROUP="CLIENT"> 
       <DEFAULT>"host1:9200;host2:9200"</DEFAULT> 
     </PARAMETER>  
-<!-- 
-    <PARAMETER FIELD="CHECK" NAME="USE_SSL" NUM_ROW="15" GROUP="TRANSPORT_CLIENT"> 
-      <DEFAULT>false</DEFAULT> 
-    </PARAMETER>  
-    <PARAMETER FIELD="CHECK" NAME="USE_AUTHORIZATION" NUM_ROW="15" GROUP="TRANSPORT_CLIENT"> 
-      <DEFAULT>false</DEFAULT> 
-    </PARAMETER>  
-    <PARAMETER FIELD="TEXT" NAME="USER" NUM_ROW="20" REQUIRED="true" SHOW_IF="USE_AUTHORIZATION == 'true'" GROUP="TRANSPORT_CLIENT"> 
-      <DEFAULT></DEFAULT> 
-    </PARAMETER>  
-    <PARAMETER FIELD="TEXT" NAME="PASSWORD" NUM_ROW="20" REQUIRED="true" SHOW_IF="USE_AUTHORIZATION == 'true'" GROUP="TRANSPORT_CLIENT"> 
-      <DEFAULT></DEFAULT> 
-    </PARAMETER>  
--->
-    <PARAMETER FIELD="TEXT" NAME="INDEX" NUM_ROW="30"> 
-      <DEFAULT>"twitter"</DEFAULT> 
-    </PARAMETER>  
-    <PARAMETER FIELD="TEXT" NAME="OBJECT_TYPE" NUM_ROW="30"> 
-      <DEFAULT>"feed"</DEFAULT> 
-    </PARAMETER>  
-    <PARAMETER FIELD="CLOSED_LIST" NAME="OUTPUT_OPERATION" NUM_ROW="40" REQUIRED="true"> 
-      <ITEMS DEFAULT="UPSERT"> 
-        <ITEM NAME="UPSERT" VALUE="UPSERT"/>  
-        <ITEM NAME="INSERT" VALUE="INSERT"/>  
-        <ITEM NAME="UPDATE" VALUE="UPDATE"/> 
-      </ITEMS> 
-    </PARAMETER>  
-    <PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="50"> 
+    <PARAMETER FIELD="TEXT" NAME="INDEX" REQUIRED="true" NUM_ROW="30"> 
       <DEFAULT/> 
     </PARAMETER>  
-    <PARAMETER NAME="COLUMN_CONFIG" FIELD="TABLE" NUM_ROW="60" NB_LINES="5"> 
-      <ITEMS BASED_ON_SCHEMA="true"> 
-        <ITEM NAME="ATTRIBUTE_ALIAS" FIELD="TEXT"/>  
-        <ITEM NAME="USE" FIELD="CHECK"/>  
-        <ITEM NAME="IS_DOC" FIELD="CHECK"/>  
-      </ITEMS> 
-    </PARAMETER>  
+    <PARAMETER FIELD="TEXT" NAME="OBJECT_TYPE" REQUIRED="true" NUM_ROW="40"> 
+      <DEFAULT/> 
+    </PARAMETER> 
   </PARAMETERS>  
   <ADVANCED_PARAMETERS> 
-    <PARAMETER FIELD="TEXT" NAME="BATCH_SIZE" NUM_ROW="20"> 
+    <PARAMETER FIELD="TEXT" NAME="BATCH_SIZE" NUM_ROW="10"> 
       <DEFAULT>1000</DEFAULT> 
     </PARAMETER>  
+    <PARAMETER NAME="RELEASE_LABEL_20180516" FIELD="LABEL" COLOR="0;0;0" NUM_ROW="900">
+      <DEFAULT>Release: 0.9 build at: 20180516</DEFAULT>
+    </PARAMETER>
   </ADVANCED_PARAMETERS>  
   <CODEGENERATION> 
-    <IMPORTS/> 
+    <IMPORTS> 
+      <IMPORT NAME="jlo-talendcomp-elasticsearch" MODULE="jlo-talendcomp-elasticsearch-0.9.jar" REQUIRED="true"/>
+      <IMPORT NAME="elasticsearch-rest-high-level-client" MODULE="elasticsearch-rest-high-level-client-6.2.4.jar" REQUIRED="true"/>
+      <IMPORT NAME="elasticsearch" MODULE="elasticsearch-6.2.4.jar" REQUIRED="true"/>
+      <IMPORT NAME="elasticsearch-core" MODULE="elasticsearch-core-6.2.4.jar" REQUIRED="true"/>
+      <IMPORT NAME="lucene-core" MODULE="lucene-core-7.2.1.jar" REQUIRED="true"/>
+      <IMPORT NAME="securesm" MODULE="securesm-1.2.jar" REQUIRED="true"/>
+      <IMPORT NAME="elasticsearch-cli" MODULE="elasticsearch-cli-6.2.4.jar" REQUIRED="true"/>
+      <IMPORT NAME="jopt-simple" MODULE="jopt-simple-5.0.2.jar" REQUIRED="true"/>
+      <IMPORT NAME="joda-time" MODULE="joda-time-2.9.9.jar" REQUIRED="true"/>
+      <IMPORT NAME="jackson-dataformat-smile" MODULE="jackson-dataformat-smile-2.8.10.jar" REQUIRED="true"/>
+      <IMPORT NAME="jackson-dataformat-yaml" MODULE="jackson-dataformat-yaml-2.8.10.jar" REQUIRED="true"/>
+      <IMPORT NAME="jackson-dataformat-cbor" MODULE="jackson-dataformat-cbor-2.8.10.jar" REQUIRED="true"/>
+      <IMPORT NAME="log4j-api" MODULE="log4j-api-2.9.1.jar" REQUIRED="true"/>
+      <IMPORT NAME="jna" MODULE="jna-4.5.1.jar" REQUIRED="true"/>
+      <IMPORT NAME="elasticsearch-rest-client" MODULE="elasticsearch-rest-client-6.2.4.jar" REQUIRED="true"/>
+      <IMPORT NAME="httpclient" MODULE="httpclient-4.5.2.jar" REQUIRED="true"/>
+      <IMPORT NAME="httpcore" MODULE="httpcore-4.4.5.jar" REQUIRED="true"/>
+      <IMPORT NAME="httpasyncclient" MODULE="httpasyncclient-4.1.2.jar" REQUIRED="true"/>
+      <IMPORT NAME="httpcore-nio" MODULE="httpcore-nio-4.4.5.jar" REQUIRED="true"/>
+      <IMPORT NAME="commons-codec" MODULE="commons-codec-1.10.jar" REQUIRED="true"/>
+      <IMPORT NAME="commons-logging" MODULE="commons-logging-1.1.3.jar" REQUIRED="true"/>
+      <IMPORT NAME="parent-join-client" MODULE="parent-join-client-6.2.4.jar" REQUIRED="true"/>
+      <IMPORT NAME="log4j-core" MODULE="log4j-core-2.9.1.jar" REQUIRED="true"/>
+      <IMPORT NAME="aggs-matrix-stats-client" MODULE="aggs-matrix-stats-client-6.2.4.jar" REQUIRED="true"/>
+      <IMPORT NAME="rank-eval-client" MODULE="rank-eval-client-6.2.4.jar" REQUIRED="true"/>
+      <IMPORT NAME="jackson-databind" MODULE="jackson-databind-2.8.6.jar" REQUIRED="true"/>
+      <IMPORT NAME="jackson-annotations" MODULE="jackson-annotations-2.8.0.jar" REQUIRED="true"/>
+      <IMPORT NAME="jackson-core" MODULE="jackson-core-2.8.6.jar" REQUIRED="true"/>
+    </IMPORTS> 
   </CODEGENERATION>  
   <RETURNS> 
-    <RETURN AVAILABILITY="AFTER" NAME="NB_LINE" TYPE="id_Integer"/>  
+    <RETURN AVAILABILITY="AFTER" NAME="NB_LINE" TYPE="id_Integer"/> 
   </RETURNS>
 </COMPONENT>
