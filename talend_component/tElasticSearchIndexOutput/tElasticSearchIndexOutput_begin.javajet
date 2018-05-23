@@ -25,13 +25,22 @@
 	if (batchSize == null || batchSize.trim().isEmpty()) {
 		batchSize = "null";
 	}
-	boolean debug = "true".equals(ElementParameterParser.getValue(node, "__DEBUG__"));
+	boolean debug = "true".equals(ElementParameterParser.getValue(node, "__DEBUG__")); 
+	boolean encrypted = "true".equals(ElementParameterParser.getValue(node, "__ENCRYPTED__")); 
+	boolean useAuth = "true".equals(ElementParameterParser.getValue(node, "__USE_AUTHENTICATION__"));
+	String user = ElementParameterParser.getValue(node, "__USER__");
+	String password = ElementParameterParser.getValue(node, "__PASSWORD__");
 	boolean log4jEnabled = "true".equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 %>
 	de.jlo.talendcomp.elasticsearch.ElasticClient client_<%=cid%> = new de.jlo.talendcomp.elasticsearch.ElasticClient();
 	client_<%=cid%>.setDebug(<%=debug%>);
+<%	if (useAuth) { %>
+	// use authentication
+	client_<%=cid%>.setUser(<%=user%>); 
+	client_<%=cid%>.setPassword(<%=user%>); 
+<%	} %>
 	try {
-		client_<%=cid%>.setNodes(<%=nodes%>, null);
+		client_<%=cid%>.setNodes(<%=nodes%>, <%=encrypted%>);
 		client_<%=cid%>.setupClient();
 	} catch (Exception e) {
 		String message = "Setup ElasticSearch client failed: " + e.getMessage();

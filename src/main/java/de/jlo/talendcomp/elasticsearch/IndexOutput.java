@@ -2,7 +2,6 @@ package de.jlo.talendcomp.elasticsearch;
 
 import java.nio.charset.Charset;
 
-import org.apache.http.message.BasicHeader;
 import org.apache.log4j.Logger;
 import org.elasticsearch.action.bulk.BulkItemResponse;
 import org.elasticsearch.action.bulk.BulkRequest;
@@ -104,7 +103,7 @@ public class IndexOutput {
 			if (LOG.isDebugEnabled()) {
 				LOG.debug("Send bulk " + (finalRequest ? "final " : "") + "request at current row num: " + currentRowNum + ", number actions: " + bulkRequest.numberOfActions());
 			}
-			BulkResponse bulkResponse = elasticClient.executeBulk(bulkRequest, new BasicHeader("Content-Type", "application/x-ndjson"));
+			BulkResponse bulkResponse = elasticClient.executeBulk(bulkRequest);
 			if (bulkResponse.hasFailures()) {
 				StringBuilder sb = new StringBuilder();
 				sb.append("Upsert failed for:");

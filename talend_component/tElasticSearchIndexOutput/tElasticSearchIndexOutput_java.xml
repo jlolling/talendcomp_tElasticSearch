@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <COMPONENT> 
-  <HEADER AUTHOR="Jan Lolling" COMPATIBILITY="ALL" DATA_AUTO_PROPAGATE="true" HAS_CONDITIONAL_OUTPUTS="false" PLATEFORM="ALL" RELEASE_DATE="20180523" SERIAL="" STARTABLE="false" STATUS="PROD" VERSION="1.0"> 
+  <HEADER AUTHOR="Jan Lolling" COMPATIBILITY="ALL" DATA_AUTO_PROPAGATE="true" HAS_CONDITIONAL_OUTPUTS="false" PLATEFORM="ALL" RELEASE_DATE="20180523" SERIAL="" STARTABLE="false" STATUS="PROD" VERSION="1.1"> 
     <SIGNATURE/> 
   </HEADER>  
   <FAMILIES> 
@@ -27,10 +27,22 @@
     <PARAMETER FIELD="TEXT" NAME="NODES" NUM_ROW="20" REQUIRED="true" GROUP="CLIENT"> 
       <DEFAULT>"host1:9200;host2:9200"</DEFAULT> 
     </PARAMETER>  
-    <PARAMETER FIELD="TEXT" NAME="INDEX" REQUIRED="true" NUM_ROW="30"> 
+    <PARAMETER FIELD="CHECK" NAME="ENCRYPTED" REQUIRED="true" NUM_ROW="30" GROUP="CLIENT"> 
+      <DEFAULT>false</DEFAULT> 
+    </PARAMETER>  
+    <PARAMETER FIELD="CHECK" NAME="USE_AUTHENTICATION" REQUIRED="true" NUM_ROW="40" GROUP="CLIENT"> 
+      <DEFAULT>false</DEFAULT> 
+    </PARAMETER>  
+    <PARAMETER FIELD="TEXT" NAME="USER" REQUIRED="true" NUM_ROW="50" GROUP="CLIENT" SHOW_IF="USE_AUTHENTICATION == 'true'"> 
       <DEFAULT/> 
     </PARAMETER>  
-    <PARAMETER FIELD="TEXT" NAME="OBJECT_TYPE" REQUIRED="true" NUM_ROW="40"> 
+    <PARAMETER FIELD="PASSWORD" NAME="PASSWORD" REQUIRED="true" NUM_ROW="50" GROUP="CLIENT" SHOW_IF="USE_AUTHENTICATION == 'true'"> 
+      <DEFAULT/> 
+    </PARAMETER>  
+    <PARAMETER FIELD="TEXT" NAME="INDEX" REQUIRED="true" NUM_ROW="60"> 
+      <DEFAULT/> 
+    </PARAMETER>  
+    <PARAMETER FIELD="TEXT" NAME="OBJECT_TYPE" REQUIRED="true" NUM_ROW="70"> 
       <DEFAULT/> 
     </PARAMETER> 
   </PARAMETERS>  
@@ -42,12 +54,12 @@
       <DEFAULT>1000</DEFAULT> 
     </PARAMETER>  
     <PARAMETER NAME="RELEASE_LABEL_20180523" FIELD="LABEL" COLOR="0;0;0" NUM_ROW="900">
-      <DEFAULT>Release: 1.0 build at: 20180523</DEFAULT>
+      <DEFAULT>Release: 1.1 build at: 20180523</DEFAULT>
     </PARAMETER>
   </ADVANCED_PARAMETERS>  
   <CODEGENERATION> 
     <IMPORTS> 
-      <IMPORT NAME="jlo-talendcomp-elasticsearch" MODULE="jlo-talendcomp-elasticsearch-1.0.jar" REQUIRED="true"/>
+      <IMPORT NAME="jlo-talendcomp-elasticsearch" MODULE="jlo-talendcomp-elasticsearch-1.1.jar" REQUIRED="true"/>
       <IMPORT NAME="elasticsearch-rest-high-level-client" MODULE="elasticsearch-rest-high-level-client-6.2.4.jar" REQUIRED="true"/>
       <IMPORT NAME="elasticsearch" MODULE="elasticsearch-6.2.4.jar" REQUIRED="true"/>
       <IMPORT NAME="elasticsearch-core" MODULE="elasticsearch-core-6.2.4.jar" REQUIRED="true"/>

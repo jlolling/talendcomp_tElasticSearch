@@ -9,11 +9,14 @@ import java.util.StringTokenizer;
 
 import org.apache.http.Header;
 import org.apache.http.HttpHost;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.message.BasicHeader;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.client.RestClient;
+import org.elasticsearch.client.RestClientBuilder;
 import org.elasticsearch.client.RestHighLevelClient;
 
 public class ElasticClient {
@@ -24,15 +27,18 @@ public class ElasticClient {
 	private static final String DEFAULT_PORT = "9200";
 	private String user = null;
 	private String password = null;
+	private boolean useAuthentication = false;
+	private int timeout = 10000;
 
 	/**
 	 * Set the hosts in form of semicolon delimited list of hosts
 	 * @param nodes host1:port1;host2;host3:port3
-	 * @param protocol http (default) or https protocol
+	 * @param encrypted
 	 */
-	public void setNodes(String nodes, String protocol) throws Exception {
-		if (isEmpty(protocol)) {
-			protocol = "http";
+	public void setNodes(String nodes, Boolean encrypted) throws Exception {
+		String protocol = "http";
+		if (encrypted != null && encrypted.booleanValue()) {
+			protocol = "https";
 		}
 		hostList = new ArrayList<HttpHost>();
 		if (isEmpty(nodes) == false) {
@@ -78,7 +84,36 @@ public class ElasticClient {
 		for (int i = 0; i < hostList.size(); i++) {
 			httpHosts[i] = hostList.get(i);
 		}
-		client = new RestHighLevelClient(RestClient.builder(httpHosts));
+		RestClientBuilder rcb = RestClient.builder(httpHosts);
+		rcb.setRequestConfigCallback(new RestClientBuilder.RequestConfigCallback() {
+			
+		    @Override
+		    public RequestConfig.Builder customizeRequestConfig(RequestConfig.Builder requestConfigBuilder) {
+		        return requestConfigBuilder
+		        		.setSocketTimeout(timeout)
+		        		.setConnectTimeout(timeout)
+                        .setRedirectsEnabled(true)
+                        .setRelativeRedirectsAllowed(true)
+		        		.setContentCompressionEnabled(true);
+		    }
+		    
+		});
+		Header[] defaultHeaders = null;
+		if (useAuthentication && user != null) {
+			if (isEmpty(password)) {
+				throw new IllegalStateException("Password not set!");
+			}
+			defaultHeaders = new Header[3];
+			defaultHeaders[0] = new BasicHeader("Content-Type", "application/x-ndjson");
+			defaultHeaders[1] = new BasicHeader("Authorization", "Basic " + Base64.encodeToBase64String(user + ":" + password));
+			defaultHeaders[2] = new BasicHeader("Cache-Control", "no-cache");
+		} else {
+			defaultHeaders = new Header[2];
+			defaultHeaders[0] = new BasicHeader("Content-Type", "application/x-ndjson");
+			defaultHeaders[1] = new BasicHeader("Cache-Control", "no-cache");
+		}
+		rcb.setDefaultHeaders(defaultHeaders);
+		client = new RestHighLevelClient(rcb);
 	}
 	
 	public RestHighLevelClient getRestHighLevelClient() {
@@ -101,7 +136,10 @@ public class ElasticClient {
 
 	public void setUser(String user) {
 		if (isEmpty(user) == false) {
+			useAuthentication = true;
 			this.user = user;
+		} else {
+			useAuthentication = false;
 		}
 	}
 
@@ -131,7 +169,7 @@ public class ElasticClient {
 			if (message == null) {
 				message = ex.getClass().getName();
 			}
-			throw new Exception("executeBulk failed: " + ex.getMessage(), ex);
+			throw new Exception("execute bulk request to servers: " + hostList + " failed: " + message, ex);
 		}
 		return resp;
 	}
@@ -141,6 +179,16 @@ public class ElasticClient {
 			Logger.getRootLogger().setLevel(Level.DEBUG);
 		} else {
 			Logger.getRootLogger().setLevel(Level.INFO);
+		}
+	}
+
+	public int getTimeout() {
+		return timeout;
+	}
+
+	public void setTimeout(Integer timeout) {
+		if (timeout != null && timeout.intValue() > 0) {
+			this.timeout = timeout;
 		}
 	}
 	

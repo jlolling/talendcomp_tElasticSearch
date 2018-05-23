@@ -62,7 +62,7 @@ public class TestIndexOutput {
 
 		for (int i = 0; i < maxRecords; i++) {
 			Integer key = i;
-			Object json = "{\"key\":" + key + ",\"name\":\"Hain" + i + "\"}"; 
+			Object json = "{\"number\":" + key + ",\"name\":\"Hain" + i + "\"}"; 
 			currentComponent = "tElasticSearchIndexOutput_1";
 
 			try {
@@ -91,8 +91,6 @@ public class TestIndexOutput {
 
 			tos_count_tElasticSearchIndexOutput_1++;
 		}
-		
-
 
 		currentComponent = "tElasticSearchIndexOutput_1";
 
