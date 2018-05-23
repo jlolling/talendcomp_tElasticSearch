@@ -127,6 +127,10 @@ public class ElasticClient {
 				LOG.debug("<< has failures?: " + resp.hasFailures() + " status: " + resp.status());
 			}
 		} catch (Exception ex) {
+			String message = ex.getMessage();
+			if (message == null) {
+				message = ex.getClass().getName();
+			}
 			throw new Exception("executeBulk failed: " + ex.getMessage(), ex);
 		}
 		return resp;
