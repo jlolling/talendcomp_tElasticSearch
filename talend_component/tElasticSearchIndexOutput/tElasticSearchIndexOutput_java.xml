@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <COMPONENT> 
-  <HEADER AUTHOR="Jan Lolling" COMPATIBILITY="ALL" DATA_AUTO_PROPAGATE="true" HAS_CONDITIONAL_OUTPUTS="false" PLATEFORM="ALL" RELEASE_DATE="20180516" SERIAL="" STARTABLE="false" STATUS="PROD" VERSION="0.9"> 
+  <HEADER AUTHOR="Jan Lolling" COMPATIBILITY="ALL" DATA_AUTO_PROPAGATE="true" HAS_CONDITIONAL_OUTPUTS="false" PLATEFORM="ALL" RELEASE_DATE="20180523" SERIAL="" STARTABLE="false" STATUS="PROD" VERSION="1.0"> 
     <SIGNATURE/> 
   </HEADER>  
   <FAMILIES> 
@@ -35,16 +35,19 @@
     </PARAMETER> 
   </PARAMETERS>  
   <ADVANCED_PARAMETERS> 
-    <PARAMETER FIELD="TEXT" NAME="BATCH_SIZE" NUM_ROW="10"> 
+    <PARAMETER FIELD="CHECK" NAME="DEBUG" NUM_ROW="10"> 
+      <DEFAULT>false</DEFAULT> 
+    </PARAMETER>  
+    <PARAMETER FIELD="TEXT" NAME="BATCH_SIZE" NUM_ROW="20"> 
       <DEFAULT>1000</DEFAULT> 
     </PARAMETER>  
-    <PARAMETER NAME="RELEASE_LABEL_20180516" FIELD="LABEL" COLOR="0;0;0" NUM_ROW="900">
-      <DEFAULT>Release: 0.9 build at: 20180516</DEFAULT>
+    <PARAMETER NAME="RELEASE_LABEL_20180523" FIELD="LABEL" COLOR="0;0;0" NUM_ROW="900">
+      <DEFAULT>Release: 1.0 build at: 20180523</DEFAULT>
     </PARAMETER>
   </ADVANCED_PARAMETERS>  
   <CODEGENERATION> 
     <IMPORTS> 
-      <IMPORT NAME="jlo-talendcomp-elasticsearch" MODULE="jlo-talendcomp-elasticsearch-0.9.jar" REQUIRED="true"/>
+      <IMPORT NAME="jlo-talendcomp-elasticsearch" MODULE="jlo-talendcomp-elasticsearch-1.0.jar" REQUIRED="true"/>
       <IMPORT NAME="elasticsearch-rest-high-level-client" MODULE="elasticsearch-rest-high-level-client-6.2.4.jar" REQUIRED="true"/>
       <IMPORT NAME="elasticsearch" MODULE="elasticsearch-6.2.4.jar" REQUIRED="true"/>
       <IMPORT NAME="elasticsearch-core" MODULE="elasticsearch-core-6.2.4.jar" REQUIRED="true"/>

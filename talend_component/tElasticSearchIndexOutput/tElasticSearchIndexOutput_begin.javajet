@@ -25,9 +25,11 @@
 	if (batchSize == null || batchSize.trim().isEmpty()) {
 		batchSize = "null";
 	}
+	boolean debug = "true".equals(ElementParameterParser.getValue(node, "__DEBUG__"));
 	boolean log4jEnabled = "true".equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 %>
 	de.jlo.talendcomp.elasticsearch.ElasticClient client_<%=cid%> = new de.jlo.talendcomp.elasticsearch.ElasticClient();
+	client_<%=cid%>.setDebug(<%=debug%>);
 	try {
 		client_<%=cid%>.setNodes(<%=nodes%>, null);
 		client_<%=cid%>.setupClient();

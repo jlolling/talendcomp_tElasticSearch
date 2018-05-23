@@ -3,6 +3,7 @@ package de.jlo.talendcomp.elasticsearch;
 import java.nio.charset.Charset;
 
 import org.apache.http.message.BasicHeader;
+import org.apache.log4j.Logger;
 import org.elasticsearch.action.bulk.BulkItemResponse;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
@@ -16,6 +17,7 @@ import org.elasticsearch.common.xcontent.XContentType;
 
 public class IndexOutput {
 	
+	private static final Logger LOG = Logger.getLogger(IndexOutput.class);
 	private ElasticClient elasticClient = null;
 	private BulkRequest bulkRequest = null;
 	private int currentRowNum = 0;
@@ -44,9 +46,14 @@ public class IndexOutput {
 	 * @param key the key of the document
 	 */
 	public void addDocument(Object key, Object json) throws Exception {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("addDocument key: " + key + " json: " + json);
+		}
 		if (key == null) {
 			throw new Exception("Add json failed: Key cannot be null");
 		}
+		insertContentBuilder = XContentFactory.jsonBuilder();
+		updateContentBuilder = XContentFactory.jsonBuilder();
 		String id = String.valueOf(key);
 		BytesReference br = createBytesReferences(json);
 		insertContentBuilder.rawValue(br, XContentType.JSON);
@@ -57,6 +64,9 @@ public class IndexOutput {
 				.doc(updateContentBuilder)
 				.upsert(indexRequest);
 		if (bulkRequest == null) {
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("Setup new bulk request");
+			}
 			bulkRequest = new BulkRequest();
 		}
 		bulkRequest.add(updateRequest);
@@ -91,6 +101,9 @@ public class IndexOutput {
 	 */
 	public void upsert(boolean finalRequest) throws Exception {
 		if (bulkRequest != null && (finalRequest || (currentRowNum % batchSize == 0))) {
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("Send bulk " + (finalRequest ? "final " : "") + "request at current row num: " + currentRowNum + ", number actions: " + bulkRequest.numberOfActions());
+			}
 			BulkResponse bulkResponse = elasticClient.executeBulk(bulkRequest, new BasicHeader("Content-Type", "application/x-ndjson"));
 			if (bulkResponse.hasFailures()) {
 				StringBuilder sb = new StringBuilder();
@@ -104,7 +117,9 @@ public class IndexOutput {
 						sb.append(br.getFailureMessage());
 					}
 				}
-				throw new Exception(sb.toString());
+				String message = "Indexing into index: " + index + " type: " + objectType + " failed: " + sb.toString();
+				LOG.error(message);
+				throw new Exception(message);
 			}
 			bulkRequest = null;
 		}
