@@ -12,9 +12,9 @@
 	boolean log4jEnabled = "true".equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 %>
 	try {
-		<%=cid%>.finalUpsert();
+		<%=cid%>.executeBulkFinal();
 	} catch (Exception <%=cid%>_upex) {
-		String message = "Final upsert request failed: " + <%=cid%>_upex.getMessage();
+		String message = "Final bulk request failed: " + <%=cid%>_upex.getMessage();
 		globalMap.put("<%=cid%>_ERROR_MESSAGE", message);
 <%	if (log4jEnabled) { %>
 		log.error(message, <%=cid%>_upex);
@@ -22,4 +22,7 @@
 		throw <%=cid%>_upex;
 	}
 	client_<%=cid%>.close();
-	globalMap.put("<%=cid%>_NB_LINE", <%=cid%>.getCountUpserts());
+	globalMap.put("<%=cid%>_NB_LINE", <%=cid%>.getCountProcessed());
+	globalMap.put("<%=cid%>_NB_LINE_INDEXED", <%=cid%>.getCountIndexed());
+	globalMap.put("<%=cid%>_NB_LINE_DELETED", <%=cid%>.getCountDeleted());
+	

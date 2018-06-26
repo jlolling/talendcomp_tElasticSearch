@@ -21,7 +21,11 @@
 	boolean log4jEnabled = "true".equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 	if (conn != null) { %>
 	try {
-		<%=cid%>.addDocument(<%=conn.getName()%>.key, <%=conn.getName()%>.json);
+		if (<%=conn.getName()%>.delete) {
+			<%=cid%>.addDocumentForDelete(<%=conn.getName()%>.key);
+		} else {
+			<%=cid%>.addDocumentForUpsert(<%=conn.getName()%>.key, <%=conn.getName()%>.json);
+		}
 	} catch (Exception <%=cid%>_addex) {
 		String message = "Add document failed: " + <%=cid%>_addex.getMessage();
 		globalMap.put("<%=cid%>_ERROR_MESSAGE", message);
@@ -31,9 +35,9 @@
 		throw <%=cid%>_addex;
 	}
 	try {
-		<%=cid%>.upsert();
+		<%=cid%>.executeBulk();
 	} catch (Exception <%=cid%>_upex) {
-		String message = "Upsert request failed: " + <%=cid%>_upex.getMessage();
+		String message = "Bulk request failed: " + <%=cid%>_upex.getMessage();
 		globalMap.put("<%=cid%>_ERROR_MESSAGE", message);
 <%	if (log4jEnabled) { %>
 		log.error(message, <%=cid%>_upex);

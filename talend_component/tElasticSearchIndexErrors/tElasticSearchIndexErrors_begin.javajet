@@ -1,0 +1,37 @@
+<%@ jet 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.ElementParameterParser 
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.IConnection
+		org.talend.core.model.process.IConnectionCategory
+		org.talend.core.model.utils.NodeUtil
+		java.util.List
+	" 
+%>
+<% 
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode) codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+	String comp = ElementParameterParser.getValue(node, "__ELASTIC_COMPONENT__");
+	IConnection conn = null;
+	List<? extends IConnection> inConns = NodeUtil.getOutgoingConnections(node, IConnectionCategory.DATA);
+	if (inConns.size() > 0) {
+		conn = inConns.get(0);
+	}
+%>
+	de.jlo.talendcomp.elasticsearch.IndexOutput <%=cid%> = (de.jlo.talendcomp.elasticsearch.IndexOutput) globalMap.get("<%=comp%>");
+	if (<%=cid%> == null) {
+		throw new Exception("The component <%=comp%> is not initialized. Please take care you use this component in a flow later than the <%=comp%> component!");
+	}
+	int countErrors_<%=cid%> = <%=cid%>.getCountErrors();
+	globalMap.put("<%=cid%>_COUNT_ERRORS", countErrors_<%=cid%>);
+<%	if (conn != null) { %>
+	int i_<%=cid%> = 0;
+	for ( ; i_<%=cid%> < countErrors_<%=cid%>; i_<%=cid%>++) {
+		de.jlo.talendcomp.elasticsearch.IndexError error_<%=cid%> = <%=cid%>.getIndexError(i_<%=cid%>);
+		<%=conn.getName()%>.key = error_<%=cid%>.getId();
+		<%=conn.getName()%>.operation = error_<%=cid%>.getOperation();
+		<%=conn.getName()%>.failure_message = error_<%=cid%>.getMessage();
+<%	} %>
+	

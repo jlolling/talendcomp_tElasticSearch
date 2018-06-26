@@ -66,7 +66,7 @@ public class TestIndexOutput {
 			currentComponent = "tElasticSearchIndexOutput_1";
 
 			try {
-				tElasticSearchIndexOutput_1.addDocument(
+				tElasticSearchIndexOutput_1.addDocumentForUpsert(
 						key, json);
 			} catch (Exception tElasticSearchIndexOutput_1_addex) {
 				String message = "Add document failed: "
@@ -78,7 +78,7 @@ public class TestIndexOutput {
 				throw tElasticSearchIndexOutput_1_addex;
 			}
 			try {
-				tElasticSearchIndexOutput_1.upsert();
+				tElasticSearchIndexOutput_1.executeBulk();
 			} catch (Exception tElasticSearchIndexOutput_1_upex) {
 				String message = "Upsert request failed: "
 						+ tElasticSearchIndexOutput_1_upex
@@ -95,7 +95,7 @@ public class TestIndexOutput {
 		currentComponent = "tElasticSearchIndexOutput_1";
 
 		try {
-			tElasticSearchIndexOutput_1.finalUpsert();
+			tElasticSearchIndexOutput_1.executeBulkFinal();
 		} catch (Exception tElasticSearchIndexOutput_1_upex) {
 			String message = "Final upsert request failed: "
 					+ tElasticSearchIndexOutput_1_upex.getMessage();

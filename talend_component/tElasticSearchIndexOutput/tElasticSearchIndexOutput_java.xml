@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <COMPONENT> 
-  <HEADER AUTHOR="Jan Lolling" COMPATIBILITY="ALL" DATA_AUTO_PROPAGATE="true" HAS_CONDITIONAL_OUTPUTS="false" PLATEFORM="ALL" RELEASE_DATE="20180523" SERIAL="" STARTABLE="false" STATUS="PROD" VERSION="1.1"> 
+  <HEADER AUTHOR="Jan Lolling" COMPATIBILITY="ALL" DATA_AUTO_PROPAGATE="false" HAS_CONDITIONAL_OUTPUTS="false" PLATEFORM="ALL" RELEASE_DATE="20180626" SERIAL="" STARTABLE="false" STATUS="PROD" VERSION="2.0" LOG4J_ENABLED="true"> 
     <SIGNATURE/> 
   </HEADER>  
   <FAMILIES> 
@@ -20,8 +20,9 @@
   <PARAMETERS> 
     <PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="10"> 
       <TABLE READONLY="true"> 
-        <COLUMN NAME="key" TYPE="id_Object" READONLY="true" CUSTOM="true" NULLABLE="false" COMMENT="The id for the document"/>  
-        <COLUMN NAME="json" TYPE="id_Object" READONLY="true" CUSTOM="true" NULLABLE="false" COMMENT="JSON document to add"/> 
+        <COLUMN NAME="key" TYPE="id_Object" READONLY="true" CUSTOM="true" NULLABLE="false" COMMENT="The id of the document"/>  
+        <COLUMN NAME="json" TYPE="id_Object" READONLY="true" CUSTOM="true" NULLABLE="true" COMMENT="JSON document to add to index"/>  
+        <COLUMN NAME="delete" TYPE="id_Boolean" READONLY="true" CUSTOM="true" NULLABLE="false" COMMENT="false=index operation, true=delete operation"/> 
       </TABLE> 
     </PARAMETER>  
     <PARAMETER FIELD="TEXT" NAME="NODES" NUM_ROW="20" REQUIRED="true" GROUP="CLIENT"> 
@@ -53,13 +54,13 @@
     <PARAMETER FIELD="TEXT" NAME="BATCH_SIZE" NUM_ROW="20"> 
       <DEFAULT>1000</DEFAULT> 
     </PARAMETER>  
-    <PARAMETER NAME="RELEASE_LABEL_20180523" FIELD="LABEL" COLOR="0;0;0" NUM_ROW="900">
-      <DEFAULT>Release: 1.1 build at: 20180523</DEFAULT>
+    <PARAMETER NAME="RELEASE_LABEL_20180626" FIELD="LABEL" COLOR="0;0;0" NUM_ROW="900">
+      <DEFAULT>Release: 2.0 build at: 20180626</DEFAULT>
     </PARAMETER>
   </ADVANCED_PARAMETERS>  
   <CODEGENERATION> 
     <IMPORTS> 
-      <IMPORT NAME="jlo-talendcomp-elasticsearch" MODULE="jlo-talendcomp-elasticsearch-1.1.jar" REQUIRED="true"/>
+      <IMPORT NAME="jlo-talendcomp-elasticsearch" MODULE="jlo-talendcomp-elasticsearch-2.0.jar" REQUIRED="true"/>
       <IMPORT NAME="elasticsearch-rest-high-level-client" MODULE="elasticsearch-rest-high-level-client-6.2.4.jar" REQUIRED="true"/>
       <IMPORT NAME="elasticsearch" MODULE="elasticsearch-6.2.4.jar" REQUIRED="true"/>
       <IMPORT NAME="elasticsearch-core" MODULE="elasticsearch-core-6.2.4.jar" REQUIRED="true"/>
@@ -90,6 +91,8 @@
     </IMPORTS> 
   </CODEGENERATION>  
   <RETURNS> 
-    <RETURN AVAILABILITY="AFTER" NAME="NB_LINE" TYPE="id_Integer"/> 
+    <RETURN AVAILABILITY="AFTER" NAME="NB_LINE" TYPE="id_Integer"/>  
+    <RETURN AVAILABILITY="AFTER" NAME="NB_LINE_INDEXED" TYPE="id_Integer"/>  
+    <RETURN AVAILABILITY="AFTER" NAME="NB_LINE_DELETED" TYPE="id_Integer"/> 
   </RETURNS>
 </COMPONENT>

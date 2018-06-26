@@ -1,0 +1,29 @@
+<%@ jet 
+	imports="
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.ElementParameterParser 
+		org.talend.core.model.process.IConnection
+		org.talend.core.model.process.IConnectionCategory
+		org.talend.core.model.utils.NodeUtil
+		java.util.List
+	" 
+%>
+<% 
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode) codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+	IConnection conn = null;
+	List<? extends IConnection> inConns = NodeUtil.getOutgoingConnections(node, IConnectionCategory.DATA);
+	if (inConns.size() > 0) {
+		conn = inConns.get(0);
+	}
+	boolean clearErrors = "true".equals(ElementParameterParser.getValue(node, "__CLEAR_ERRORS__"));
+%>
+<%	if (conn != null) { %>
+	} // close for loop <%=cid%>
+<%	} %>
+	globalMap.put("<%=cid%>_NB_LINE", i_<%=cid%>);
+<%	if (clearErrors) { %>
+	<%=cid%>.clearIndexErrors();
+<%	} %>
