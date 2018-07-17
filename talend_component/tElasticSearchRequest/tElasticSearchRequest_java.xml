@@ -65,7 +65,7 @@
     <PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="90"> 
       <TABLE> 
         <COLUMN NAME="statusCode" TYPE="id_Integer" READONLY="true" CUSTOM="true" NULLABLE="false" COMMENT="HTTP status code"/>  
-        <COLUMN NAME="body" TYPE="id_Object" READONLY="true" CUSTOM="true" NULLABLE="true" COMMENT="JSON response payload"/> 
+        <COLUMN NAME="body" TYPE="id_String" READONLY="true" CUSTOM="true" NULLABLE="true" COMMENT="JSON response payload"/> 
       </TABLE> 
     </PARAMETER> 
   </PARAMETERS>  
