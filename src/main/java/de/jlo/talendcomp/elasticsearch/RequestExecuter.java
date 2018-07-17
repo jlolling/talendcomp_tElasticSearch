@@ -1,5 +1,6 @@
 package de.jlo.talendcomp.elasticsearch;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,6 +23,11 @@ public class RequestExecuter {
 	private int httpStatusCode = 0;
 	private String errorMessage = null;
 	protected final static ObjectMapper objectMapper = new ObjectMapper();
+	private Map<String, String> queryParams = new HashMap<>();
+	private String path = null;
+	private String method = null;
+	private Map<String, String> headerMap = new HashMap<>();
+	private Object payload = null;
 	
 	public RequestExecuter(ElasticClient elasticClient) {
 		if (elasticClient == null) {
@@ -30,10 +36,16 @@ public class RequestExecuter {
 		this.restClient = elasticClient.getLowLevelClient();
 	}
 	
-	public String performRequest(String method, String path, Map<String, String> queryParams, Object payload, Map<String, String> headerMap) throws Exception {
+	public String performRequest() throws Exception {
+		if (isEmpty(path)) {
+			throw new IllegalArgumentException("Path cannot be null or empty");
+		}
+		if (isEmpty(method)) {
+			throw new IllegalArgumentException("Method cannot be null or empty");
+		}
 		HttpEntity entity = buildEntity(payload);
 		Header[] headerArray = null;
-		if (headerMap == null) {
+		if (headerMap == null || headerMap.isEmpty()) {
 			headerMap = new HashMap<>();
 			headerMap.put("Content-Type", "application/json");
 			headerMap.put("Accept", "application/json");
@@ -49,7 +61,7 @@ public class RequestExecuter {
 			headerArray = new Header[headerMap.size()];
 			int i = 0;
 			for (Map.Entry<String, String> entry : headerMap.entrySet()) {
-				if (entry.getValue() != null && entry.getValue().isEmpty() == false) {
+				if (entry.getValue() == null || entry.getValue().isEmpty()) {
 					throw new IllegalStateException("Header " +  entry.getKey() + " cannot have null or empty string as value!");
 				}
 				headerArray[i++] = new BasicHeader(entry.getKey(), entry.getValue());
@@ -85,6 +97,54 @@ public class RequestExecuter {
 
 	public int getHttpStatusCode() {
 		return httpStatusCode;
+	}
+	
+	public static boolean isEmpty(String s) {
+		return (s != null && s.trim().isEmpty() == false && "null".equals(s) == false) == false;
+	}
+	
+	public void setQueryParameter(String key, String value) {
+		if (isEmpty(key) == false && isEmpty(value) == false) {
+			queryParams.put(key, value);	
+		}
+	}
+	
+	public void setHeaderParameter(String key, String value) {
+		if (isEmpty(key) == false && isEmpty(value) == false) {
+			headerMap.put(key, value);
+		}
+	}
+
+	public void setPath(String path) {
+		if (isEmpty(path)) {
+			throw new IllegalArgumentException("Path cannot be null or empty");
+		}
+		this.path = path;
+	}
+	
+	public void setMethod(String method) {
+		if (isEmpty(method)) {
+			throw new IllegalArgumentException("Method cannot be null or empty");
+		}
+		this.method = method;
+	}
+
+	public Object getPayload() {
+		return payload;
+	}
+
+	public void setPayload(Object payload) {
+		this.payload = payload;
+	}
+	
+	public void close() {
+		if (restClient != null) {
+			try {
+				restClient.close();
+			} catch (IOException e) {
+				// ignore
+			}
+		}
 	}
 
 }

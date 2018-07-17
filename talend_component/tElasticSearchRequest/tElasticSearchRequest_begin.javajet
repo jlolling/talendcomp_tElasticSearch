@@ -39,4 +39,5 @@
 		throw e;
 	}
 	de.jlo.talendcomp.elasticsearch.RequestExecuter <%=cid%> = new de.jlo.talendcomp.elasticsearch.RequestExecuter(client_<%=cid%>);
-	globalMap.put("<%=cid%>", <%=cid%>);	
+	globalMap.put("<%=cid%>", <%=cid%>);
+	int nb_line_<%=cid%> = 0;
