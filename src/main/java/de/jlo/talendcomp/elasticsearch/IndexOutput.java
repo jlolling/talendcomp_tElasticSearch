@@ -26,8 +26,6 @@ public class IndexOutput {
 	private int countUpserted = 0;
 	private int countDeleted = 0;
 	private int batchSize = 1000;
-	private XContentBuilder insertContentBuilder = null;
-	private XContentBuilder updateContentBuilder = null;
 	private String index = null;
 	private String objectType = null;
 	private List<IndexError> listErrors = new ArrayList<IndexError>();
@@ -40,8 +38,6 @@ public class IndexOutput {
 	}
 	
 	public void initialize() throws Exception {
-		insertContentBuilder = XContentFactory.jsonBuilder();
-		updateContentBuilder = XContentFactory.jsonBuilder();
 		bulkRequest = null;
 		listErrors = new ArrayList<IndexError>();
 	}
@@ -81,8 +77,8 @@ public class IndexOutput {
 		if (json == null) {
 			throw new Exception("Add document for upsert failed: Json content cannot be null");
 		}
-		insertContentBuilder = XContentFactory.jsonBuilder();
-		updateContentBuilder = XContentFactory.jsonBuilder();
+		XContentBuilder insertContentBuilder = XContentFactory.jsonBuilder();
+		XContentBuilder updateContentBuilder = XContentFactory.jsonBuilder();
 		String id = String.valueOf(key);
 		BytesReference br = createBytesReferences(json);
 		insertContentBuilder.rawValue(br, XContentType.JSON);
@@ -170,6 +166,7 @@ public class IndexOutput {
 				LOG.error(message);
 				throw new Exception(message);
 			}
+			bulkRequest.requests().clear();
 			bulkRequest = null;
 		}
 	}

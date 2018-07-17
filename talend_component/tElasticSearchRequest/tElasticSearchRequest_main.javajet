@@ -1,0 +1,60 @@
+<%@ jet 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.ElementParameterParser 
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.IConnection
+		org.talend.core.model.process.IConnectionCategory
+		org.talend.core.model.utils.NodeUtil
+		java.util.List
+	" 
+%>
+<% 
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode) codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+	List<? extends IConnection> inConns = NodeUtil.getIncomingConnections(node, IConnectionCategory.DATA);
+	IConnection inconn = null;
+	if (inConns.size() > 0) {
+		inconn = inConns.get(0);
+	}
+	List<? extends IConnection> outConns = NodeUtil.getOutgoingConnections(node, IConnectionCategory.DATA);
+	IConnection outconn = null;
+	if (outConns.size() > 0) {
+		outconn = outConns.get(0);
+	}
+	String setup = ElementParameterParser.getValue(node, "__SETUP__");
+	String inputContent = ElementParameterParser.getValue(node, "__REQEST_PAYLOAD_CONTENT__");
+	if (inputContent == null) {
+		inputContent = "null";
+	}
+	String inputColumnName = null;
+	if (inconn != null) {
+		inputColumnName = ElementParameterParser.getValue(node, "__REQEST_PAYLOAD_INPUT_COLUMN__");
+	}
+   String path = ElementParameterParser.getValue(node, "__PATH__");
+   String method = ElementParameterParser.getValue(node, "__METHOD__");
+	boolean log4jEnabled = "true".equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__")); %>
+	try {
+		String payload_<%=cid%> = null;
+<%	if ("input".equals(setup) && inputContent != null && inputContent.trim().isEmpty() == false) { %>
+		payload_<%=cid%> = <%=inputContent%>;
+<%	} else if ("flow".equals(setup) && inconn != null && inputColumnName != null) { %>
+		payload_<%=cid%> = <%=inconn%>.<%=inputColumnName%>;
+<% } %>
+		String <%=cid%>_response = <%=cid%>.performRequest("<%=method%>", <%=path%>, null, payload_<%=cid%>, null);
+		int <%=cid%>_statusCode = <%=cid%>.getHttpStatusCode();
+		globalMap.put("<%=cid%>_RESPONSE", <%=cid%>_response);
+		globalMap.put("<%=cid%>_STATUS_CODE", <%=cid%>_statusCode);
+<% if (outconn != null) { %>
+		<%=outconn%>.body = <%=cid%>_response;
+		<%=outconn%>.statusCode = <%=cid%>_statusCode;
+<%	} %>
+	} catch (Exception <%=cid%>_upex) {
+		String message = "Request failed: " + <%=cid%>_upex.getMessage();
+		globalMap.put("<%=cid%>_ERROR_MESSAGE", message);
+<%	if (log4jEnabled) { %>
+		log.error(message, <%=cid%>_upex);
+<%	} %>
+		throw <%=cid%>_upex;
+	}	

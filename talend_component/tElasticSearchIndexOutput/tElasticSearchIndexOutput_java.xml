@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <COMPONENT> 
-  <HEADER AUTHOR="Jan Lolling" COMPATIBILITY="ALL" DATA_AUTO_PROPAGATE="false" HAS_CONDITIONAL_OUTPUTS="false" PLATEFORM="ALL" RELEASE_DATE="20180626" SERIAL="" STARTABLE="false" STATUS="PROD" VERSION="2.0" LOG4J_ENABLED="true"> 
+  <HEADER AUTHOR="Jan Lolling" COMPATIBILITY="ALL" DATA_AUTO_PROPAGATE="false" HAS_CONDITIONAL_OUTPUTS="false" PLATEFORM="ALL" RELEASE_DATE="20180717" SERIAL="" STARTABLE="false" STATUS="PROD" VERSION="2.0" LOG4J_ENABLED="true"> 
     <SIGNATURE/> 
   </HEADER>  
   <FAMILIES> 
@@ -54,13 +54,14 @@
     <PARAMETER FIELD="TEXT" NAME="BATCH_SIZE" NUM_ROW="20"> 
       <DEFAULT>1000</DEFAULT> 
     </PARAMETER>  
-    <PARAMETER NAME="RELEASE_LABEL_20180626" FIELD="LABEL" COLOR="0;0;0" NUM_ROW="900">
-      <DEFAULT>Release: 2.0 build at: 20180626</DEFAULT>
+    <PARAMETER NAME="RELEASE_LABEL_20180717" FIELD="LABEL" COLOR="0;0;0" NUM_ROW="900">
+      <DEFAULT>Release: 2.0 build at: 20180717</DEFAULT>
     </PARAMETER>
   </ADVANCED_PARAMETERS>  
   <CODEGENERATION> 
     <IMPORTS> 
       <IMPORT NAME="jlo-talendcomp-elasticsearch" MODULE="jlo-talendcomp-elasticsearch-2.0.jar" REQUIRED="true"/>
+      <IMPORT NAME="log4j" MODULE="log4j-1.2.17.jar" REQUIRED="true"/>
       <IMPORT NAME="elasticsearch-rest-high-level-client" MODULE="elasticsearch-rest-high-level-client-6.2.4.jar" REQUIRED="true"/>
       <IMPORT NAME="elasticsearch" MODULE="elasticsearch-6.2.4.jar" REQUIRED="true"/>
       <IMPORT NAME="elasticsearch-core" MODULE="elasticsearch-core-6.2.4.jar" REQUIRED="true"/>
@@ -85,9 +86,11 @@
       <IMPORT NAME="log4j-core" MODULE="log4j-core-2.9.1.jar" REQUIRED="true"/>
       <IMPORT NAME="aggs-matrix-stats-client" MODULE="aggs-matrix-stats-client-6.2.4.jar" REQUIRED="true"/>
       <IMPORT NAME="rank-eval-client" MODULE="rank-eval-client-6.2.4.jar" REQUIRED="true"/>
-      <IMPORT NAME="jackson-databind" MODULE="jackson-databind-2.8.6.jar" REQUIRED="true"/>
-      <IMPORT NAME="jackson-annotations" MODULE="jackson-annotations-2.8.0.jar" REQUIRED="true"/>
-      <IMPORT NAME="jackson-core" MODULE="jackson-core-2.8.6.jar" REQUIRED="true"/>
+      <IMPORT NAME="jackson-databind" MODULE="jackson-databind-2.9.2.jar" REQUIRED="true"/>
+      <IMPORT NAME="jackson-annotations" MODULE="jackson-annotations-2.9.0.jar" REQUIRED="true"/>
+      <IMPORT NAME="jackson-core" MODULE="jackson-core-2.9.2.jar" REQUIRED="true"/>
+      <IMPORT NAME="json-path" MODULE="json-path-2.4.0.jar" REQUIRED="true"/>
+      <IMPORT NAME="slf4j-api" MODULE="slf4j-api-1.7.25.jar" REQUIRED="true"/>
     </IMPORTS> 
   </CODEGENERATION>  
   <RETURNS> 

@@ -22,7 +22,8 @@ import org.elasticsearch.client.RestHighLevelClient;
 public class ElasticClient {
 	
 	private static final Logger LOG = Logger.getLogger(ElasticClient.class); 
-	private RestHighLevelClient client = null;
+	private RestHighLevelClient highLevelClient = null;
+	private RestClient lowLevelClient = null;
 	private List<HttpHost> hostList = new ArrayList<HttpHost>();
 	private static final String DEFAULT_PORT = "9200";
 	private String user = null;
@@ -105,25 +106,26 @@ public class ElasticClient {
 			}
 			defaultHeaders = new Header[3];
 			defaultHeaders[0] = new BasicHeader("Content-Type", "application/x-ndjson");
-			defaultHeaders[1] = new BasicHeader("Authorization", "Basic " + Base64.encodeToBase64String(user + ":" + password));
-			defaultHeaders[2] = new BasicHeader("Cache-Control", "no-cache");
+			defaultHeaders[1] = new BasicHeader("Cache-Control", "no-cache");
+			defaultHeaders[2] = new BasicHeader("Authorization", "Basic " + Base64.encodeToBase64String(user + ":" + password));
 		} else {
 			defaultHeaders = new Header[2];
 			defaultHeaders[0] = new BasicHeader("Content-Type", "application/x-ndjson");
 			defaultHeaders[1] = new BasicHeader("Cache-Control", "no-cache");
 		}
 		rcb.setDefaultHeaders(defaultHeaders);
-		client = new RestHighLevelClient(rcb);
+		highLevelClient = new RestHighLevelClient(rcb);
+		lowLevelClient = highLevelClient.getLowLevelClient();
 	}
 	
 	public RestHighLevelClient getRestHighLevelClient() {
-		return client;
+		return highLevelClient;
 	}
 	
 	public void close() {
-		if (client != null) {
+		if (highLevelClient != null) {
 			try {
-				client.close();
+				highLevelClient.close();
 			} catch (IOException e) {
 				// ignore
 			}
@@ -160,7 +162,7 @@ public class ElasticClient {
 		BulkResponse resp = null;
 		// TODO add retry feature
 		try {
-			resp = client.bulk(bulkRequest, headers);
+			resp = highLevelClient.bulk(bulkRequest, headers);
 			if (LOG.isDebugEnabled()) {
 				LOG.debug("<< has failures?: " + resp.hasFailures() + " status: " + resp.status());
 			}
@@ -191,5 +193,11 @@ public class ElasticClient {
 			this.timeout = timeout;
 		}
 	}
+
+	public RestClient getLowLevelClient() {
+		return lowLevelClient;
+	}
+	
+	
 	
 }

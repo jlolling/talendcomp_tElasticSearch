@@ -104,10 +104,10 @@ public class TestIndexOutput {
 			throw tElasticSearchIndexOutput_1_upex;
 		}
 		client_tElasticSearchIndexOutput_1.close();
-		int actual = tElasticSearchIndexOutput_1.getCountUpserts();
+		int actual = tElasticSearchIndexOutput_1.getCountIndexed();
 		int expected = maxRecords;
 		globalMap.put("tElasticSearchIndexOutput_1_NB_LINE",
-				tElasticSearchIndexOutput_1.getCountUpserts());
+				tElasticSearchIndexOutput_1.getCountIndexed());
 
 		ok_Hash.put("tElasticSearchIndexOutput_1", true);
 		end_Hash.put("tElasticSearchIndexOutput_1",

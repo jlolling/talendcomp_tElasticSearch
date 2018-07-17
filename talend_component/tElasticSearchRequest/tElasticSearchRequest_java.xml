@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<COMPONENT> 
+  <HEADER AUTHOR="Jan Lolling" COMPATIBILITY="ALL" DATA_AUTO_PROPAGATE="false" HAS_CONDITIONAL_OUTPUTS="false" PLATEFORM="ALL" RELEASE_DATE="20180717" SERIAL="" STARTABLE="true" STATUS="PROD" VERSION="2.0" LOG4J_ENABLED="true"> 
+    <SIGNATURE/> 
+  </HEADER>  
+  <FAMILIES> 
+    <FAMILY>ElasticSearch</FAMILY> 
+  </FAMILIES>  
+  <DOCUMENTATION> 
+    <URL/> 
+  </DOCUMENTATION>  
+  <CONNECTORS> 
+    <CONNECTOR CTYPE="FLOW" MAX_INPUT="1" MAX_OUTPUT="1"/>  
+    <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="0" MAX_INPUT="0"/>  
+    <CONNECTOR CTYPE="SUBJOB_OK" MAX_INPUT="1"/>  
+    <CONNECTOR CTYPE="SUBJOB_ERROR" MAX_INPUT="0"/>  
+    <CONNECTOR CTYPE="COMPONENT_OK"/>  
+    <CONNECTOR CTYPE="COMPONENT_ERROR"/>  
+    <CONNECTOR CTYPE="RUN_IF"/> 
+  </CONNECTORS>  
+  <PARAMETERS> 
+    <PARAMETER FIELD="TEXT" NAME="NODES" NUM_ROW="20" REQUIRED="true" GROUP="CLIENT"> 
+      <DEFAULT>"host1:9200;host2:9200"</DEFAULT> 
+    </PARAMETER>  
+    <PARAMETER FIELD="CHECK" NAME="ENCRYPTED" REQUIRED="true" NUM_ROW="30" GROUP="CLIENT"> 
+      <DEFAULT>false</DEFAULT> 
+    </PARAMETER>  
+    <PARAMETER FIELD="CHECK" NAME="USE_AUTHENTICATION" REQUIRED="true" NUM_ROW="40" GROUP="CLIENT"> 
+      <DEFAULT>false</DEFAULT> 
+    </PARAMETER>  
+    <PARAMETER FIELD="TEXT" NAME="USER" REQUIRED="true" NUM_ROW="50" GROUP="CLIENT" SHOW_IF="USE_AUTHENTICATION == 'true'"> 
+      <DEFAULT/> 
+    </PARAMETER>  
+    <PARAMETER FIELD="PASSWORD" NAME="PASSWORD" REQUIRED="true" NUM_ROW="50" GROUP="CLIENT" SHOW_IF="USE_AUTHENTICATION == 'true'"> 
+      <DEFAULT/> 
+    </PARAMETER>  
+    <PARAMETER NAME="METHOD" FIELD="CLOSED_LIST" NUM_ROW="60"> 
+      <ITEMS DEFAULT="GET"> 
+        <ITEM NAME="GET" VALUE="GET"/>  
+        <ITEM NAME="POST" VALUE="POST"/>  
+        <ITEM NAME="PUT" VALUE="PUT"/>  
+        <ITEM NAME="DELETE" VALUE="DELETE"/> 
+      </ITEMS> 
+    </PARAMETER>  
+    <PARAMETER NAME="PATH" FIELD="TEXT" REQUIRED="true" NUM_ROW="60"> 
+      <DEFAULT/> 
+    </PARAMETER>  
+    <PARAMETER FIELD="CLOSED_LIST" NAME="SETUP" NUM_ROW="70" REQUIRED="true" SHOW_IF="(METHOD == 'POST') or (METHOD == 'PUT')"> 
+      <ITEMS DEFAULT="READ_FROM_FLOW"> 
+        <ITEM NAME="READ_FROM_FLOW" VALUE="flow"/>  
+        <ITEM NAME="READ_FROM_INPUT" VALUE="input"/> 
+      </ITEMS> 
+    </PARAMETER>  
+    <PARAMETER NAME="REQUEST_PAYLOAD_CONTENT" FIELD="MEMO_JAVA" NB_LINES="10" NUM_ROW="80" REQUIRED="true" SHOW_IF="(SETUP == 'READ_FROM_INPUT') and ((METHOD == 'POST') or (METHOD == 'PUT'))"> 
+      <DEFAULT/> 
+    </PARAMETER>  
+    <PARAMETER NAME="REQUEST_PAYLOAD_INPUT_COLUMN" FIELD="PREV_COLUMN_LIST" REQUIRED="true" NUM_ROW="80" SHOW_IF="(SETUP == 'READ_FROM_FLOW') and ((METHOD == 'POST') or (METHOD == 'PUT'))"/>  
+    <PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="90"> 
+      <TABLE> 
+        <COLUMN NAME="statusCode" TYPE="id_Integer" READONLY="true" NULLABLE="false" COMMENT="HTTP status code"/>  
+        <COLUMN NAME="body" TYPE="id_Object" READONLY="true" CUSTOM="true" NULLABLE="true" COMMENT="JSON response payload"/> 
+      </TABLE> 
+    </PARAMETER> 
+  </PARAMETERS>  
+  <ADVANCED_PARAMETERS> 
+    <PARAMETER FIELD="CHECK" NAME="DEBUG" NUM_ROW="10"> 
+      <DEFAULT>false</DEFAULT> 
+    </PARAMETER>  
+    <PARAMETER NAME="RELEASE_LABEL_20180717" FIELD="LABEL" COLOR="0;0;0" NUM_ROW="900">
+      <DEFAULT>Release: 2.0 build at: 20180717</DEFAULT>
+    </PARAMETER>
+  </ADVANCED_PARAMETERS>  
+  <CODEGENERATION> 
+    <IMPORTS> 
+      <IMPORT NAME="jlo-talendcomp-elasticsearch" MODULE="jlo-talendcomp-elasticsearch-2.0.jar" REQUIRED="true"/>
+      <IMPORT NAME="log4j" MODULE="log4j-1.2.17.jar" REQUIRED="true"/>
+      <IMPORT NAME="elasticsearch-rest-high-level-client" MODULE="elasticsearch-rest-high-level-client-6.2.4.jar" REQUIRED="true"/>
+      <IMPORT NAME="elasticsearch" MODULE="elasticsearch-6.2.4.jar" REQUIRED="true"/>
+      <IMPORT NAME="elasticsearch-core" MODULE="elasticsearch-core-6.2.4.jar" REQUIRED="true"/>
+      <IMPORT NAME="lucene-core" MODULE="lucene-core-7.2.1.jar" REQUIRED="true"/>
+      <IMPORT NAME="securesm" MODULE="securesm-1.2.jar" REQUIRED="true"/>
+      <IMPORT NAME="elasticsearch-cli" MODULE="elasticsearch-cli-6.2.4.jar" REQUIRED="true"/>
+      <IMPORT NAME="jopt-simple" MODULE="jopt-simple-5.0.2.jar" REQUIRED="true"/>
+      <IMPORT NAME="joda-time" MODULE="joda-time-2.9.9.jar" REQUIRED="true"/>
+      <IMPORT NAME="jackson-dataformat-smile" MODULE="jackson-dataformat-smile-2.8.10.jar" REQUIRED="true"/>
+      <IMPORT NAME="jackson-dataformat-yaml" MODULE="jackson-dataformat-yaml-2.8.10.jar" REQUIRED="true"/>
+      <IMPORT NAME="jackson-dataformat-cbor" MODULE="jackson-dataformat-cbor-2.8.10.jar" REQUIRED="true"/>
+      <IMPORT NAME="log4j-api" MODULE="log4j-api-2.9.1.jar" REQUIRED="true"/>
+      <IMPORT NAME="jna" MODULE="jna-4.5.1.jar" REQUIRED="true"/>
+      <IMPORT NAME="elasticsearch-rest-client" MODULE="elasticsearch-rest-client-6.2.4.jar" REQUIRED="true"/>
+      <IMPORT NAME="httpclient" MODULE="httpclient-4.5.2.jar" REQUIRED="true"/>
+      <IMPORT NAME="httpcore" MODULE="httpcore-4.4.5.jar" REQUIRED="true"/>
+      <IMPORT NAME="httpasyncclient" MODULE="httpasyncclient-4.1.2.jar" REQUIRED="true"/>
+      <IMPORT NAME="httpcore-nio" MODULE="httpcore-nio-4.4.5.jar" REQUIRED="true"/>
+      <IMPORT NAME="commons-codec" MODULE="commons-codec-1.10.jar" REQUIRED="true"/>
+      <IMPORT NAME="commons-logging" MODULE="commons-logging-1.1.3.jar" REQUIRED="true"/>
+      <IMPORT NAME="parent-join-client" MODULE="parent-join-client-6.2.4.jar" REQUIRED="true"/>
+      <IMPORT NAME="log4j-core" MODULE="log4j-core-2.9.1.jar" REQUIRED="true"/>
+      <IMPORT NAME="aggs-matrix-stats-client" MODULE="aggs-matrix-stats-client-6.2.4.jar" REQUIRED="true"/>
+      <IMPORT NAME="rank-eval-client" MODULE="rank-eval-client-6.2.4.jar" REQUIRED="true"/>
+      <IMPORT NAME="jackson-databind" MODULE="jackson-databind-2.9.2.jar" REQUIRED="true"/>
+      <IMPORT NAME="jackson-annotations" MODULE="jackson-annotations-2.9.0.jar" REQUIRED="true"/>
+      <IMPORT NAME="jackson-core" MODULE="jackson-core-2.9.2.jar" REQUIRED="true"/>
+      <IMPORT NAME="json-path" MODULE="json-path-2.4.0.jar" REQUIRED="true"/>
+      <IMPORT NAME="slf4j-api" MODULE="slf4j-api-1.7.25.jar" REQUIRED="true"/>
+    </IMPORTS> 
+  </CODEGENERATION>  
+  <RETURNS> 
+    <RETURN AVAILABILITY="AFTER" NAME="NB_LINE" TYPE="id_Integer"/>  
+    <RETURN AVAILABILITY="AFTER" NAME="RESPONSE" TYPE="id_Object"/>  
+    <RETURN AVAILABILITY="AFTER" NAME="STATUS_CODE" TYPE="id_Integer"/> 
+  </RETURNS>
+</COMPONENT>
