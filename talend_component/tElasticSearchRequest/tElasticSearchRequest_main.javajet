@@ -5,8 +5,11 @@
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		org.talend.core.model.process.IConnection
 		org.talend.core.model.process.IConnectionCategory
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.metadata.IMetadataColumn 
 		org.talend.core.model.utils.NodeUtil
 		java.util.List
+		java.util.ArrayList
 		java.util.Map
 	" 
 %>
@@ -14,15 +17,21 @@
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode) codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
-	List<? extends IConnection> inConns = NodeUtil.getIncomingConnections(node, IConnectionCategory.DATA);
+	List<IMetadataColumn> listIncomingColumns = new ArrayList<IMetadataColumn>();
 	IConnection inconn = null;
+	List<? extends IConnection> inConns = NodeUtil.getIncomingConnections(node, IConnectionCategory.DATA);
 	if (inConns.size() > 0) {
 		inconn = inConns.get(0);
+		IMetadataTable metadata = node.getMetadataFromConnector(inconn.getConnectorName());
+		listIncomingColumns = metadata.getListColumns();
 	}
+	List<IMetadataColumn> listOutgoingColumns = new ArrayList<IMetadataColumn>(); // dummy
 	List<? extends IConnection> outConns = NodeUtil.getOutgoingConnections(node, IConnectionCategory.DATA);
 	IConnection outconn = null;
 	if (outConns.size() > 0) {
 		outconn = outConns.get(0);
+		IMetadataTable metadata = node.getMetadataFromConnector(outconn.getConnectorName());
+		listOutgoingColumns = metadata.getListColumns();
 	}
 	String setup = ElementParameterParser.getValue(node, "__SETUP__");
 	String inputContent = ElementParameterParser.getValue(node, "__REQUEST_PAYLOAD_CONTENT__");
@@ -61,6 +70,18 @@
 		<%=outconn.getName()%>.body = <%=cid%>_response;
 		<%=outconn.getName()%>.statusCode = <%=cid%>_statusCode;
 <%	} %>
+<%	if (inconn != null && outconn != null) {
+		for (IMetadataColumn incol : listIncomingColumns) {
+			for (IMetadataColumn outcol : listOutgoingColumns) {
+				if ("body".equals(incol.getLabel()) == false &&
+					"statusCode".equals(incol.getLabel()) == false && 
+					incol.getLabel().equals(outcol.getLabel())) { %>
+		<%=outconn.getName()%>.<%=outcol.getLabel()%> = <%=inconn.getName()%>.<%=incol.getLabel()%>;
+<%       	}
+				break;
+			}
+		}
+	} %>
 		nb_line_<%=cid%>++;
 	} catch (Exception <%=cid%>_upex) {
 		String message = "Request failed: " + <%=cid%>_upex.getMessage();
