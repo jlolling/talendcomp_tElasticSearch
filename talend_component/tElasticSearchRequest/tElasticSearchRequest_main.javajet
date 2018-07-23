@@ -77,8 +77,8 @@
 					"statusCode".equals(incol.getLabel()) == false && 
 					incol.getLabel().equals(outcol.getLabel())) { %>
 		<%=outconn.getName()%>.<%=outcol.getLabel()%> = <%=inconn.getName()%>.<%=incol.getLabel()%>;
-<%       	}
-				break;
+<%					break;
+       		}
 			}
 		}
 	} %>
