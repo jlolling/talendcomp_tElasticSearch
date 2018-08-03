@@ -1,4 +1,4 @@
-<%@ jet 
+	<%@ jet 
 	imports="
 		org.talend.core.model.process.INode 
 		org.talend.core.model.process.ElementParameterParser 

@@ -8,10 +8,12 @@ import java.util.Map;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.StatusLine;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.util.EntityUtils;
 import org.elasticsearch.client.Response;
+import org.elasticsearch.client.ResponseException;
 import org.elasticsearch.client.RestClient;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -67,14 +69,26 @@ public class RequestExecuter {
 				headerArray[i++] = new BasicHeader(entry.getKey(), entry.getValue());
 			}
 		}
-		Response response = restClient.performRequest(method, path, queryParams, entity, headerArray);
-		StatusLine sl = response.getStatusLine();
-		httpStatusCode = sl.getStatusCode();
-		if (httpStatusCode == 200) {
-			return EntityUtils.toString(response.getEntity(), "UTF-8");
-		} else {
-			errorMessage = sl.getReasonPhrase() + ": " + EntityUtils.toString(response.getEntity(), "UTF-8");
+		Response response = null;
+		try {
+			response = restClient.performRequest(method, path, queryParams, entity, headerArray);
+			StatusLine sl = response.getStatusLine();
+			httpStatusCode = sl.getStatusCode();
+			if (httpStatusCode == 200) {
+				return EntityUtils.toString(response.getEntity(), "UTF-8");
+			} else {
+				errorMessage = sl.getReasonPhrase() + ": " + EntityUtils.toString(response.getEntity(), "UTF-8");
+				return errorMessage;
+			}
+		} catch (ResponseException cpe) {
+			Response errorResponse = cpe.getResponse();
+			errorMessage = EntityUtils.toString(errorResponse.getEntity(), "UTF-8");
+			httpStatusCode = errorResponse.getStatusLine().getStatusCode();
 			return errorMessage;
+		} catch (ClientProtocolException cpe) {
+			throw new Exception("Request http-protocol error: " + cpe.getMessage(), cpe);
+		} catch (IOException ioe) {
+			throw new Exception("Request io-error: " + ioe.getMessage(), ioe);
 		}
 	}
 	
