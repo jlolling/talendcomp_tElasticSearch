@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <COMPONENT> 
-  <HEADER AUTHOR="Jan Lolling" COMPATIBILITY="ALL" DATA_AUTO_PROPAGATE="false" HAS_CONDITIONAL_OUTPUTS="false" PLATEFORM="ALL" RELEASE_DATE="20181030" SERIAL="" STARTABLE="true" STATUS="PROD" VERSION="2.2" LOG4J_ENABLED="true"> 
+  <HEADER AUTHOR="Jan Lolling" COMPATIBILITY="ALL" DATA_AUTO_PROPAGATE="false" HAS_CONDITIONAL_OUTPUTS="false" PLATEFORM="ALL" RELEASE_DATE="20200228" SERIAL="" STARTABLE="true" STATUS="PROD" VERSION="2.2" LOG4J_ENABLED="true"> 
     <SIGNATURE/> 
   </HEADER>  
   <FAMILIES> 
@@ -73,43 +73,43 @@
     <PARAMETER FIELD="CHECK" NAME="DEBUG" NUM_ROW="10"> 
       <DEFAULT>false</DEFAULT> 
     </PARAMETER>  
-    <PARAMETER NAME="RELEASE_LABEL_20181030" FIELD="LABEL" COLOR="0;0;0" NUM_ROW="900">
-      <DEFAULT>Release: 2.2 build at: 20181030</DEFAULT>
+    <PARAMETER NAME="RELEASE_LABEL_20200228" FIELD="LABEL" COLOR="0;0;0" NUM_ROW="900">
+      <DEFAULT>Release: 2.2 build at: 20200228</DEFAULT>
     </PARAMETER>
   </ADVANCED_PARAMETERS>  
   <CODEGENERATION> 
     <IMPORTS> 
-      <IMPORT NAME="jlo-talendcomp-elasticsearch" MODULE="jlo-talendcomp-elasticsearch-2.2.jar" REQUIRED="true"/>
-      <IMPORT NAME="log4j" MODULE="log4j-1.2.17.jar" REQUIRED="true"/>
-      <IMPORT NAME="elasticsearch-rest-high-level-client" MODULE="elasticsearch-rest-high-level-client-6.2.4.jar" REQUIRED="true"/>
-      <IMPORT NAME="elasticsearch" MODULE="elasticsearch-6.2.4.jar" REQUIRED="true"/>
-      <IMPORT NAME="elasticsearch-core" MODULE="elasticsearch-core-6.2.4.jar" REQUIRED="true"/>
-      <IMPORT NAME="lucene-core" MODULE="lucene-core-7.2.1.jar" REQUIRED="true"/>
-      <IMPORT NAME="securesm" MODULE="securesm-1.2.jar" REQUIRED="true"/>
-      <IMPORT NAME="elasticsearch-cli" MODULE="elasticsearch-cli-6.2.4.jar" REQUIRED="true"/>
-      <IMPORT NAME="jopt-simple" MODULE="jopt-simple-5.0.2.jar" REQUIRED="true"/>
-      <IMPORT NAME="joda-time" MODULE="joda-time-2.9.9.jar" REQUIRED="true"/>
-      <IMPORT NAME="jackson-dataformat-smile" MODULE="jackson-dataformat-smile-2.8.10.jar" REQUIRED="true"/>
-      <IMPORT NAME="jackson-dataformat-yaml" MODULE="jackson-dataformat-yaml-2.8.10.jar" REQUIRED="true"/>
-      <IMPORT NAME="jackson-dataformat-cbor" MODULE="jackson-dataformat-cbor-2.8.10.jar" REQUIRED="true"/>
-      <IMPORT NAME="log4j-api" MODULE="log4j-api-2.9.1.jar" REQUIRED="true"/>
-      <IMPORT NAME="jna" MODULE="jna-4.5.1.jar" REQUIRED="true"/>
-      <IMPORT NAME="elasticsearch-rest-client" MODULE="elasticsearch-rest-client-6.2.4.jar" REQUIRED="true"/>
-      <IMPORT NAME="httpclient" MODULE="httpclient-4.5.2.jar" REQUIRED="true"/>
-      <IMPORT NAME="httpcore" MODULE="httpcore-4.4.5.jar" REQUIRED="true"/>
-      <IMPORT NAME="httpasyncclient" MODULE="httpasyncclient-4.1.2.jar" REQUIRED="true"/>
-      <IMPORT NAME="httpcore-nio" MODULE="httpcore-nio-4.4.5.jar" REQUIRED="true"/>
-      <IMPORT NAME="commons-codec" MODULE="commons-codec-1.10.jar" REQUIRED="true"/>
-      <IMPORT NAME="commons-logging" MODULE="commons-logging-1.1.3.jar" REQUIRED="true"/>
-      <IMPORT NAME="parent-join-client" MODULE="parent-join-client-6.2.4.jar" REQUIRED="true"/>
-      <IMPORT NAME="log4j-core" MODULE="log4j-core-2.9.1.jar" REQUIRED="true"/>
-      <IMPORT NAME="aggs-matrix-stats-client" MODULE="aggs-matrix-stats-client-6.2.4.jar" REQUIRED="true"/>
-      <IMPORT NAME="rank-eval-client" MODULE="rank-eval-client-6.2.4.jar" REQUIRED="true"/>
-      <IMPORT NAME="jackson-databind" MODULE="jackson-databind-2.9.5.jar" REQUIRED="true"/>
-      <IMPORT NAME="jackson-annotations" MODULE="jackson-annotations-2.9.0.jar" REQUIRED="true"/>
-      <IMPORT NAME="jackson-core" MODULE="jackson-core-2.9.5.jar" REQUIRED="true"/>
-      <IMPORT NAME="json-path" MODULE="json-path-2.4.0.jar" REQUIRED="true"/>
-      <IMPORT NAME="slf4j-api" MODULE="slf4j-api-1.7.25.jar" REQUIRED="true"/>
+      <IMPORT NAME="jlo-talendcomp-elasticsearch" MODULE="jlo-talendcomp-elasticsearch-2.2.jar" MVN="mvn:org.talend.libraries/jlo-talendcomp-elasticsearch-2.2/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="log4j" MODULE="log4j-1.2.17.jar" MVN="mvn:org.talend.libraries/log4j-1.2.17/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="elasticsearch-rest-high-level-client" MODULE="elasticsearch-rest-high-level-client-6.2.4.jar" MVN="mvn:org.talend.libraries/elasticsearch-rest-high-level-client-6.2.4/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="elasticsearch" MODULE="elasticsearch-6.2.4.jar" MVN="mvn:org.talend.libraries/elasticsearch-6.2.4/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="elasticsearch-core" MODULE="elasticsearch-core-6.2.4.jar" MVN="mvn:org.talend.libraries/elasticsearch-core-6.2.4/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="lucene-core" MODULE="lucene-core-7.2.1.jar" MVN="mvn:org.talend.libraries/lucene-core-7.2.1/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="securesm" MODULE="securesm-1.2.jar" MVN="mvn:org.talend.libraries/securesm-1.2/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="elasticsearch-cli" MODULE="elasticsearch-cli-6.2.4.jar" MVN="mvn:org.talend.libraries/elasticsearch-cli-6.2.4/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="jopt-simple" MODULE="jopt-simple-5.0.2.jar" MVN="mvn:org.talend.libraries/jopt-simple-5.0.2/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="joda-time" MODULE="joda-time-2.9.9.jar" MVN="mvn:org.talend.libraries/joda-time-2.9.9/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="jackson-dataformat-smile" MODULE="jackson-dataformat-smile-2.8.10.jar" MVN="mvn:org.talend.libraries/jackson-dataformat-smile-2.8.10/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="jackson-dataformat-yaml" MODULE="jackson-dataformat-yaml-2.8.10.jar" MVN="mvn:org.talend.libraries/jackson-dataformat-yaml-2.8.10/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="jackson-dataformat-cbor" MODULE="jackson-dataformat-cbor-2.8.10.jar" MVN="mvn:org.talend.libraries/jackson-dataformat-cbor-2.8.10/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="log4j-api" MODULE="log4j-api-2.9.1.jar" MVN="mvn:org.talend.libraries/log4j-api-2.9.1/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="jna" MODULE="jna-4.5.1.jar" MVN="mvn:org.talend.libraries/jna-4.5.1/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="elasticsearch-rest-client" MODULE="elasticsearch-rest-client-6.2.4.jar" MVN="mvn:org.talend.libraries/elasticsearch-rest-client-6.2.4/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="httpclient" MODULE="httpclient-4.5.2.jar" MVN="mvn:org.talend.libraries/httpclient-4.5.2/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="httpcore" MODULE="httpcore-4.4.5.jar" MVN="mvn:org.talend.libraries/httpcore-4.4.5/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="httpasyncclient" MODULE="httpasyncclient-4.1.2.jar" MVN="mvn:org.talend.libraries/httpasyncclient-4.1.2/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="httpcore-nio" MODULE="httpcore-nio-4.4.5.jar" MVN="mvn:org.talend.libraries/httpcore-nio-4.4.5/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="commons-codec" MODULE="commons-codec-1.10.jar" MVN="mvn:org.talend.libraries/commons-codec-1.10/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="commons-logging" MODULE="commons-logging-1.1.3.jar" MVN="mvn:org.talend.libraries/commons-logging-1.1.3/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="parent-join-client" MODULE="parent-join-client-6.2.4.jar" MVN="mvn:org.talend.libraries/parent-join-client-6.2.4/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="log4j-core" MODULE="log4j-core-2.9.1.jar" MVN="mvn:org.talend.libraries/log4j-core-2.9.1/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="aggs-matrix-stats-client" MODULE="aggs-matrix-stats-client-6.2.4.jar" MVN="mvn:org.talend.libraries/aggs-matrix-stats-client-6.2.4/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="rank-eval-client" MODULE="rank-eval-client-6.2.4.jar" MVN="mvn:org.talend.libraries/rank-eval-client-6.2.4/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="jackson-databind" MODULE="jackson-databind-2.9.10.1.jar" MVN="mvn:org.talend.libraries/jackson-databind-2.9.10.1/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="jackson-annotations" MODULE="jackson-annotations-2.9.10.jar" MVN="mvn:org.talend.libraries/jackson-annotations-2.9.10/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="jackson-core" MODULE="jackson-core-2.9.10.jar" MVN="mvn:org.talend.libraries/jackson-core-2.9.10/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="json-path" MODULE="json-path-2.4.0.jar" MVN="mvn:org.talend.libraries/json-path-2.4.0/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="slf4j-api" MODULE="slf4j-api-1.7.25.jar" MVN="mvn:org.talend.libraries/slf4j-api-1.7.25/6.0.0-SNAPSHOT" REQUIRED="true"/>
     </IMPORTS> 
   </CODEGENERATION>  
   <RETURNS> 
