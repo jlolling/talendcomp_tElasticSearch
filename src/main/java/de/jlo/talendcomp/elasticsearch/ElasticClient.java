@@ -11,8 +11,6 @@ import org.apache.http.Header;
 import org.apache.http.HttpHost;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.message.BasicHeader;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.client.RestClient;
@@ -21,7 +19,6 @@ import org.elasticsearch.client.RestHighLevelClient;
 
 public class ElasticClient {
 	
-	private static final Logger LOG = Logger.getLogger(ElasticClient.class); 
 	private RestHighLevelClient highLevelClient = null;
 	private RestClient lowLevelClient = null;
 	private List<HttpHost> hostList = new ArrayList<HttpHost>();
@@ -156,16 +153,10 @@ public class ElasticClient {
 	}
 	
 	public BulkResponse executeBulk(BulkRequest bulkRequest, Header ... headers) throws Exception {
-		if (LOG.isDebugEnabled()) {
-			LOG.debug(">> Execute bulk request: " + bulkRequest.getDescription());
-		}
 		BulkResponse resp = null;
 		// TODO add retry feature
 		try {
 			resp = highLevelClient.bulk(bulkRequest, headers);
-			if (LOG.isDebugEnabled()) {
-				LOG.debug("<< has failures?: " + resp.hasFailures() + " status: " + resp.status());
-			}
 		} catch (Exception ex) {
 			String message = ex.getMessage();
 			if (message == null) {
@@ -176,14 +167,6 @@ public class ElasticClient {
 		return resp;
 	}
 	
-	public void setDebug(boolean debug) {
-		if (debug) {
-			Logger.getRootLogger().setLevel(Level.DEBUG);
-		} else {
-			Logger.getRootLogger().setLevel(Level.INFO);
-		}
-	}
-
 	public int getTimeout() {
 		return timeout;
 	}
