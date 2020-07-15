@@ -5,10 +5,6 @@ import static org.junit.Assert.assertEquals;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.junit.Before;
 import org.junit.Test;
 
 public class TestIndexOutput {
@@ -19,13 +15,6 @@ public class TestIndexOutput {
 	private final java.util.Map<String, Boolean> ok_Hash = new java.util.HashMap<String, Boolean>();
 	private String currentComponent = null;
 	
-	@Before
-	public void setupClient() throws Exception {
-		Logger root = Logger.getRootLogger();
-		root.setLevel(Level.DEBUG);
-		BasicConfigurator.configure();
-	}
-
 	@Test
 	public void testUpsert() throws Exception {
 		int batchSize = 10;
@@ -33,8 +22,7 @@ public class TestIndexOutput {
 		int tos_count_tElasticSearchIndexOutput_1 = 0;
 		de.jlo.talendcomp.elasticsearch.ElasticClient client_tElasticSearchIndexOutput_1 = new de.jlo.talendcomp.elasticsearch.ElasticClient();
 		try {
-			client_tElasticSearchIndexOutput_1.setNodes(
-					"searchdev01.gvl.local:9200", null);
+			client_tElasticSearchIndexOutput_1.setNodes("localhost:9200", null);
 			client_tElasticSearchIndexOutput_1.setupClient();
 		} catch (Exception e) {
 			String message = "Setup ElasticSearch client failed: "

@@ -45,9 +45,15 @@ public class ElasticClient {
 				String hostAndPort = st.nextToken().trim();
 				if (isEmpty(hostAndPort) == false) {
 					try {
+						String host = null;
+						String port = null;
 						int pos = hostAndPort.indexOf(':');
-						String host = hostAndPort.substring(0, pos);
-						String port = hostAndPort.substring(pos + 1);
+						if (pos != -1) {
+							host = hostAndPort.substring(0, pos);
+							port = hostAndPort.substring(pos + 1);
+						} else {
+							host = hostAndPort;
+						}
 						if (isEmpty(port)) {
 							port = DEFAULT_PORT;
 						}

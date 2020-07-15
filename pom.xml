@@ -5,7 +5,7 @@
 
 	<groupId>de.jlo.talendcomp</groupId>
 	<artifactId>jlo-talendcomp-elasticsearch</artifactId>
-	<version>2.2</version>
+	<version>2.3</version>
 	<packaging>jar</packaging>
 
 	<name>jlo-talendcomp-elasticsearch</name>
@@ -123,6 +123,16 @@
 			</exclusions>
 		</dependency>
 		<dependency>
+		    <groupId>org.apache.logging.log4j</groupId>
+		    <artifactId>log4j-api</artifactId>
+		    <version>2.12.1</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.apache.logging.log4j</groupId>
+		    <artifactId>log4j-core</artifactId>
+		    <version>2.12.1</version>
+		</dependency>
+		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
 			<version>2.9.10.1</version>
@@ -141,11 +151,6 @@
 					<artifactId>json-smart</artifactId>
 				</exclusion>
 			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.17</version>
 		</dependency>
 	</dependencies>
 

@@ -4,7 +4,6 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.elasticsearch.action.bulk.BulkItemResponse;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
@@ -19,7 +18,6 @@ import org.elasticsearch.common.xcontent.XContentType;
 
 public class IndexOutput {
 	
-	private static final Logger LOG = Logger.getLogger(IndexOutput.class);
 	private ElasticClient elasticClient = null;
 	private BulkRequest bulkRequest = null;
 	private int currentRowNum = 0;
@@ -43,18 +41,12 @@ public class IndexOutput {
 	}
 	
 	public void addDocumentForDelete(Object key) throws Exception {
-		if (LOG.isDebugEnabled()) {
-			LOG.debug("addDocumentForDelete key: " + key);
-		}
 		if (key == null) {
 			throw new Exception("Add document for delete failed: Key cannot be null");
 		}
 		String id = String.valueOf(key);
 		DeleteRequest deleteRequest = new DeleteRequest(index, objectType, id);
 		if (bulkRequest == null) {
-			if (LOG.isDebugEnabled()) {
-				LOG.debug("Setup new bulk request");
-			}
 			bulkRequest = new BulkRequest();
 		}
 		bulkRequest.add(deleteRequest);
@@ -68,9 +60,6 @@ public class IndexOutput {
 	 * @param key the key of the document
 	 */
 	public void addDocumentForUpsert(Object key, Object json) throws Exception {
-		if (LOG.isDebugEnabled()) {
-			LOG.debug("addDocumentForUpsert key: " + key + " json: " + json);
-		}
 		if (key == null) {
 			throw new Exception("Add document for upsert failed: Key cannot be null");
 		}
@@ -89,9 +78,6 @@ public class IndexOutput {
 				.doc(updateContentBuilder)
 				.upsert(indexRequest);
 		if (bulkRequest == null) {
-			if (LOG.isDebugEnabled()) {
-				LOG.debug("Setup new bulk request");
-			}
 			bulkRequest = new BulkRequest();
 		}
 		bulkRequest.add(updateRequest);
@@ -139,9 +125,6 @@ public class IndexOutput {
 	 */
 	public void executeBulk(boolean finalRequest) throws Exception {
 		if (bulkRequest != null && (finalRequest || (currentRowNum % batchSize == 0))) {
-			if (LOG.isDebugEnabled()) {
-				LOG.debug("Send bulk " + (finalRequest ? "final " : "") + "request at current row num: " + currentRowNum + ", number actions: " + bulkRequest.numberOfActions());
-			}
 			BulkResponse bulkResponse = elasticClient.executeBulk(bulkRequest);
 			if (bulkResponse.hasFailures()) {
 				StringBuilder sb = new StringBuilder();
@@ -163,7 +146,6 @@ public class IndexOutput {
 					}
 				}
 				String message = "Bulk request for index: " + index + " type: " + objectType + " failed: " + sb.toString();
-				LOG.error(message);
 				throw new Exception(message);
 			}
 			bulkRequest.requests().clear();
