@@ -30,15 +30,20 @@
 	String user = ElementParameterParser.getValue(node, "__USER__");
 	String password = ElementParameterParser.getValue(node, "__PASSWORD__");
 	boolean log4jEnabled = "true".equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
+	String cfile = ElementParameterParser.getValue(node, "__CERTIFICATE_FILE__");
+	if (cfile == null || cfile.trim().isEmpty()) {
+		cfile = "null";
+	}
 %>
 	de.jlo.talendcomp.elasticsearch.ElasticClient client_<%=cid%> = new de.jlo.talendcomp.elasticsearch.ElasticClient();
 <%	if (useAuth) { %>
 	// use authentication
 	client_<%=cid%>.setUser(<%=user%>); 
-	client_<%=cid%>.setPassword(<%=user%>); 
+	client_<%=cid%>.setPassword(<%=user%>);
 <%	} %>
 	try {
 		client_<%=cid%>.setNodes(<%=nodes%>, <%=encrypted%>);
+		client_<%=cid%>.setPathToCertificate(<%=cfile%>);
 		client_<%=cid%>.setupClient();
 	} catch (Exception e) {
 		String message = "Setup ElasticSearch client failed: " + e.getMessage();

@@ -5,7 +5,7 @@
 
 	<groupId>de.jlo.talendcomp</groupId>
 	<artifactId>jlo-talendcomp-elasticsearch</artifactId>
-	<version>2.3</version>
+	<version>3.0</version>
 	<packaging>jar</packaging>
 
 	<name>jlo-talendcomp-elasticsearch</name>

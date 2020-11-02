@@ -1,20 +1,34 @@
 package de.jlo.talendcomp.elasticsearch;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.security.KeyStore;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import javax.net.ssl.SSLContext;
+
 import org.apache.http.Header;
 import org.apache.http.HttpHost;
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
 import org.apache.http.message.BasicHeader;
+import org.apache.http.ssl.SSLContextBuilder;
+import org.apache.http.ssl.SSLContexts;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestClientBuilder;
+import org.elasticsearch.client.RestClientBuilder.HttpClientConfigCallback;
 import org.elasticsearch.client.RestHighLevelClient;
 
 public class ElasticClient {
@@ -27,6 +41,7 @@ public class ElasticClient {
 	private String password = null;
 	private boolean useAuthentication = false;
 	private int timeout = 10000;
+	private String pathToCertificate = null;
 
 	/**
 	 * Set the hosts in form of semicolon delimited list of hosts
@@ -80,7 +95,35 @@ public class ElasticClient {
 		return false;
 	}
 	
-	public void setupClient() {
+	private SSLContext buildSSLContext() throws Exception {
+		if (pathToCertificate == null) {
+			return null;
+		}
+		File f = new File(pathToCertificate);
+		if (f.canRead() == false) {
+			throw new Exception("Certificate file: " + f.getAbsolutePath() + " cannot be read");
+		}
+		if (f.getName().endsWith(".crt")) {
+			Path caCertificatePath = Paths.get(f.getAbsolutePath());
+			CertificateFactory factory =
+			    CertificateFactory.getInstance("X.509");
+			Certificate trustedCa;
+			try (InputStream is = Files.newInputStream(caCertificatePath)) {
+			    trustedCa = factory.generateCertificate(is);
+			}
+			KeyStore trustStore = KeyStore.getInstance("pkcs12");
+			trustStore.load(null, null);
+			trustStore.setCertificateEntry("ca", trustedCa);
+			SSLContextBuilder sslContextBuilder = SSLContexts.custom()
+			    .loadTrustMaterial(trustStore, null);
+			final SSLContext sslContext = sslContextBuilder.build();
+			return sslContext;
+		} else {
+			throw new Exception("Currently ony *.crt files are allowed.");
+		}
+	}
+	
+	public void setupClient() throws Exception {
 		if (hostList.isEmpty()) {
 			throw new IllegalStateException("No hosts defined! Please setup at least one host."); 
 		}
@@ -102,6 +145,18 @@ public class ElasticClient {
 		    }
 		    
 		});
+		SSLContext sslContext = buildSSLContext();
+		if (sslContext != null) {
+			rcb.setHttpClientConfigCallback(new HttpClientConfigCallback() {
+				
+		        @Override
+		        public HttpAsyncClientBuilder customizeHttpClient(
+		            HttpAsyncClientBuilder httpClientBuilder) {
+		            return httpClientBuilder.setSSLContext(sslContext);
+		        }
+		        
+		    });
+		}
 		Header[] defaultHeaders = null;
 		if (useAuthentication && user != null) {
 			if (isEmpty(password)) {
@@ -185,6 +240,16 @@ public class ElasticClient {
 
 	public RestClient getLowLevelClient() {
 		return lowLevelClient;
+	}
+
+	public String getPathToCertificate() {
+		return pathToCertificate;
+	}
+
+	public void setPathToCertificate(String pathToCertificate) {
+		if (pathToCertificate != null && pathToCertificate.trim().isEmpty() == false) {
+			this.pathToCertificate = pathToCertificate.trim();
+		}
 	}
 	
 	

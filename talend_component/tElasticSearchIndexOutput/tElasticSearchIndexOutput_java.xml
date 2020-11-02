@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <COMPONENT> 
-  <HEADER AUTHOR="Jan Lolling" COMPATIBILITY="ALL" DATA_AUTO_PROPAGATE="false" HAS_CONDITIONAL_OUTPUTS="false" PLATEFORM="ALL" RELEASE_DATE="20200403" SERIAL="" STARTABLE="false" STATUS="PROD" VERSION="2.3" LOG4J_ENABLED="true"> 
+  <HEADER AUTHOR="Jan Lolling" COMPATIBILITY="ALL" DATA_AUTO_PROPAGATE="false" HAS_CONDITIONAL_OUTPUTS="false" PLATEFORM="ALL" RELEASE_DATE="20201102" SERIAL="" STARTABLE="false" STATUS="PROD" VERSION="3.0" LOG4J_ENABLED="true"> 
     <SIGNATURE/> 
   </HEADER>  
   <FAMILIES> 
@@ -31,6 +31,9 @@
     <PARAMETER FIELD="CHECK" NAME="ENCRYPTED" REQUIRED="true" NUM_ROW="30" GROUP="CLIENT"> 
       <DEFAULT>false</DEFAULT> 
     </PARAMETER>  
+    <PARAMETER FIELD="FILE" NAME="CERTIFICATE_FILE" NUM_ROW="35" GROUP="CLIENT" SHOW_IF="ENCRYPTED == 'true'"> 
+      <DEFAULT/> 
+    </PARAMETER>  
     <PARAMETER FIELD="CHECK" NAME="USE_AUTHENTICATION" REQUIRED="true" NUM_ROW="40" GROUP="CLIENT"> 
       <DEFAULT>false</DEFAULT> 
     </PARAMETER>  
@@ -51,13 +54,13 @@
     <PARAMETER FIELD="TEXT" NAME="BATCH_SIZE" NUM_ROW="20"> 
       <DEFAULT>1000</DEFAULT> 
     </PARAMETER>  
-    <PARAMETER NAME="RELEASE_LABEL_20200403" FIELD="LABEL" COLOR="0;0;0" NUM_ROW="900">
-      <DEFAULT>Release: 2.3 build at: 20200403</DEFAULT>
+    <PARAMETER NAME="RELEASE_LABEL_20201102" FIELD="LABEL" COLOR="0;0;0" NUM_ROW="900">
+      <DEFAULT>Release: 3.0 build at: 20201102</DEFAULT>
     </PARAMETER>
   </ADVANCED_PARAMETERS>  
   <CODEGENERATION> 
     <IMPORTS> 
-      <IMPORT NAME="jlo-talendcomp-elasticsearch" MODULE="jlo-talendcomp-elasticsearch-2.3.jar" MVN="mvn:org.talend.libraries/jlo-talendcomp-elasticsearch-2.3/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="jlo-talendcomp-elasticsearch" MODULE="jlo-talendcomp-elasticsearch-3.0.jar" MVN="mvn:org.talend.libraries/jlo-talendcomp-elasticsearch-3.0/6.0.0-SNAPSHOT" REQUIRED="true"/>
       <IMPORT NAME="elasticsearch-rest-high-level-client" MODULE="elasticsearch-rest-high-level-client-6.2.4.jar" MVN="mvn:org.talend.libraries/elasticsearch-rest-high-level-client-6.2.4/6.0.0-SNAPSHOT" REQUIRED="true"/>
       <IMPORT NAME="elasticsearch" MODULE="elasticsearch-6.2.4.jar" MVN="mvn:org.talend.libraries/elasticsearch-6.2.4/6.0.0-SNAPSHOT" REQUIRED="true"/>
       <IMPORT NAME="elasticsearch-core" MODULE="elasticsearch-core-6.2.4.jar" MVN="mvn:org.talend.libraries/elasticsearch-core-6.2.4/6.0.0-SNAPSHOT" REQUIRED="true"/>
