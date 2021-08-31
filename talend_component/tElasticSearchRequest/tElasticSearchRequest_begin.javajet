@@ -27,7 +27,7 @@
 <%	if (useAuth) { %>
 	// use authentication
 	client_<%=cid%>.setUser(<%=user%>); 
-	client_<%=cid%>.setPassword(<%=user%>); 
+	client_<%=cid%>.setPassword(<%=password%>); 
 <%	} %>
 	try {
 		client_<%=cid%>.setNodes(<%=nodes%>, <%=encrypted%>);
