@@ -1,5 +1,7 @@
 package de.jlo.talendcomp.elasticsearch;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,8 +12,10 @@ import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.update.UpdateRequest;
+/*
 import org.elasticsearch.common.bytes.BytesArray;
 import org.elasticsearch.common.bytes.BytesReference;
+*/
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.common.xcontent.XContentType;
@@ -69,7 +73,8 @@ public class IndexOutput {
 		XContentBuilder insertContentBuilder = XContentFactory.jsonBuilder();
 		XContentBuilder updateContentBuilder = XContentFactory.jsonBuilder();
 		String id = String.valueOf(key);
-		BytesReference br = createBytesReferences(json);
+//		BytesReference br = createBytesReferences(json);
+		InputStream br = createInputStream(json);
 		insertContentBuilder.rawValue(br, XContentType.JSON);
 		IndexRequest indexRequest = new IndexRequest(index, objectType, id)
 				.source(insertContentBuilder);
@@ -84,7 +89,7 @@ public class IndexOutput {
 		currentRowNum++;
 		countUpserted++;
 	}
-	
+/*	
 	private BytesReference createBytesReferences(Object value) {
 		if (value instanceof String) {
 			byte[] array = ((String) value).getBytes(Charset.forName("UTF-8"));
@@ -92,6 +97,18 @@ public class IndexOutput {
 		} else if (value != null) {
 			byte[] array = value.toString().getBytes(Charset.forName("UTF-8"));
 			return new BytesArray(array);
+		} else {
+			return null;
+		}
+	}
+*/	
+	private InputStream createInputStream(Object value) {
+		if (value instanceof String) {
+			byte[] array = ((String) value).getBytes(Charset.forName("UTF-8"));
+			return new ByteArrayInputStream(array);
+		} else if (value != null) {
+			byte[] array = value.toString().getBytes(Charset.forName("UTF-8"));
+			return new ByteArrayInputStream(array);
 		} else {
 			return null;
 		}

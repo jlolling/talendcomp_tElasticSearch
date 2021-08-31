@@ -18,8 +18,8 @@
 	String user = ElementParameterParser.getValue(node, "__USER__");
 	String password = ElementParameterParser.getValue(node, "__PASSWORD__");
 	boolean log4jEnabled = "true".equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
-	String cfile = ElementParameterParser.getValue(node.getProcess(), "__CERTIFICATE_FILE__");
-	if (cfile == null) {
+	String cfile = ElementParameterParser.getValue(node, "__CERTIFICATE_FILE__");
+	if (cfile == null || cfile.trim().isEmpty()) {
 		cfile = "null";
 	}
 %>

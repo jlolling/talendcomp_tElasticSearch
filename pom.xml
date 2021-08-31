@@ -5,7 +5,7 @@
 
 	<groupId>de.jlo.talendcomp</groupId>
 	<artifactId>jlo-talendcomp-elasticsearch</artifactId>
-	<version>3.0</version>
+	<version>3.1</version>
 	<packaging>jar</packaging>
 
 	<name>jlo-talendcomp-elasticsearch</name>
@@ -14,19 +14,6 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
-
-	<repositories>
-		<repository>
-			<id>elasticsearch-releases</id>
-			<url>https://artifacts.elastic.co/maven</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
 
 	<dependencies>
 		<dependency>
@@ -38,7 +25,7 @@
 		<dependency>
 			<groupId>org.elasticsearch.client</groupId>
 			<artifactId>elasticsearch-rest-high-level-client</artifactId>
-			<version>6.2.4</version>
+			<version>6.8.18</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.apache.lucene</groupId>
@@ -107,10 +94,6 @@
 				<exclusion>
 					<groupId>org.yaml</groupId>
 					<artifactId>snakeyaml</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.carrotsearch</groupId>
-					<artifactId>hppc</artifactId>
 				</exclusion>
 				<exclusion>
 					<groupId>org.hdrhistogram</groupId>
@@ -186,7 +169,7 @@
 				<configuration>
 					<copyFromSourceBaseDir>${project.basedir}/talend_component</copyFromSourceBaseDir>
 					<componentBaseDir>${project.basedir}/talend_component</componentBaseDir>
-					<studioUserComponentFolder>/Data/Talend/Studio/talend_user_components</studioUserComponentFolder>
+					<studioUserComponentFolder>${custom_component_folder}</studioUserComponentFolder>
 				</configuration>
 				<executions>
 					<execution>
