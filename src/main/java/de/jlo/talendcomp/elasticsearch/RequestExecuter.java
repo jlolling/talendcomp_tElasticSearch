@@ -5,13 +5,12 @@ import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.message.BasicHeader;
 import org.apache.http.util.EntityUtils;
+import org.elasticsearch.client.Request;
 import org.elasticsearch.client.Response;
 import org.elasticsearch.client.ResponseException;
 import org.elasticsearch.client.RestClient;
@@ -46,32 +45,11 @@ public class RequestExecuter {
 			throw new IllegalArgumentException("Method cannot be null or empty");
 		}
 		HttpEntity entity = buildEntity(payload);
-		Header[] headerArray = null;
-		if (headerMap == null || headerMap.isEmpty()) {
-			headerMap = new HashMap<>();
-			headerMap.put("Content-Type", "application/json");
-			headerMap.put("Accept", "application/json");
-		} else {
-			if (headerMap.containsKey("Content-Type") == false) {
-				headerMap.put("Content-Type", "application/json");
-			}
-			if (headerMap.containsKey("Accept") == false) {
-				headerMap.put("Accept", "application/json");
-			}
-		}
-		if (headerMap.size() > 0) {
-			headerArray = new Header[headerMap.size()];
-			int i = 0;
-			for (Map.Entry<String, String> entry : headerMap.entrySet()) {
-				if (entry.getValue() == null || entry.getValue().isEmpty()) {
-					throw new IllegalStateException("Header " +  entry.getKey() + " cannot have null or empty string as value!");
-				}
-				headerArray[i++] = new BasicHeader(entry.getKey(), entry.getValue());
-			}
-		}
 		Response response = null;
 		try {
-			response = restClient.performRequest(method, path, queryParams, entity, headerArray);
+			Request request = new Request(method, path);
+			request.setEntity(entity);
+			response = restClient.performRequest(request);
 			StatusLine sl = response.getStatusLine();
 			httpStatusCode = sl.getStatusCode();
 			if (httpStatusCode == 200) {

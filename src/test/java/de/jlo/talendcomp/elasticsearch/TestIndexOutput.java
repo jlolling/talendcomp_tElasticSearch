@@ -10,16 +10,11 @@ import org.junit.Test;
 public class TestIndexOutput {
 
 	private Map<String, Object> globalMap = new HashMap<String, Object>();
-	private final java.util.Map<String, Long> start_Hash = new java.util.HashMap<String, Long>();
-	private final java.util.Map<String, Long> end_Hash = new java.util.HashMap<String, Long>();
-	private final java.util.Map<String, Boolean> ok_Hash = new java.util.HashMap<String, Boolean>();
-	private String currentComponent = null;
 	
 	@Test
 	public void testUpsert() throws Exception {
 		int batchSize = 10;
-		int maxRecords = 33;
-		int tos_count_tElasticSearchIndexOutput_1 = 0;
+		int maxRecords = 100;
 		de.jlo.talendcomp.elasticsearch.ElasticClient client_tElasticSearchIndexOutput_1 = new de.jlo.talendcomp.elasticsearch.ElasticClient();
 		try {
 			client_tElasticSearchIndexOutput_1.setNodes("localhost:9200", null);
@@ -50,8 +45,7 @@ public class TestIndexOutput {
 
 		for (int i = 0; i < maxRecords; i++) {
 			Integer key = i;
-			Object json = "{\"number\":" + key + ",\"name\":\"Hain" + i + "\"}"; 
-			currentComponent = "tElasticSearchIndexOutput_1";
+			Object json = "{\"number\":" + key + ",\"name\":\"Jan" + i + "\"}"; 
 
 			try {
 				tElasticSearchIndexOutput_1.addDocumentForUpsert(
@@ -77,10 +71,9 @@ public class TestIndexOutput {
 				throw tElasticSearchIndexOutput_1_upex;
 			}
 
-			tos_count_tElasticSearchIndexOutput_1++;
+
 		}
 
-		currentComponent = "tElasticSearchIndexOutput_1";
 
 		try {
 			tElasticSearchIndexOutput_1.executeBulkFinal();
@@ -96,10 +89,6 @@ public class TestIndexOutput {
 		int expected = maxRecords;
 		globalMap.put("tElasticSearchIndexOutput_1_NB_LINE",
 				tElasticSearchIndexOutput_1.getCountIndexed());
-
-		ok_Hash.put("tElasticSearchIndexOutput_1", true);
-		end_Hash.put("tElasticSearchIndexOutput_1",
-				System.currentTimeMillis());
 		assertEquals(expected, actual);
 		
 	}

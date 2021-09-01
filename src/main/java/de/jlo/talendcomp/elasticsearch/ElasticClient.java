@@ -26,6 +26,7 @@ import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.ssl.SSLContexts;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
+import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestClientBuilder;
 import org.elasticsearch.client.RestClientBuilder.HttpClientConfigCallback;
@@ -217,7 +218,8 @@ public class ElasticClient {
 		BulkResponse resp = null;
 		// TODO add retry feature
 		try {
-			resp = highLevelClient.bulk(bulkRequest, headers);
+			RequestOptions options = RequestOptions.DEFAULT;
+			resp = highLevelClient.bulk(bulkRequest, options);
 		} catch (Exception ex) {
 			String message = ex.getMessage();
 			if (message == null) {
@@ -249,6 +251,8 @@ public class ElasticClient {
 	public void setPathToCertificate(String pathToCertificate) {
 		if (pathToCertificate != null && pathToCertificate.trim().isEmpty() == false) {
 			this.pathToCertificate = pathToCertificate.trim();
+		} else {
+			this.pathToCertificate = null;
 		}
 	}
 	

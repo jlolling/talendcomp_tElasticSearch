@@ -1,7 +1,5 @@
 package de.jlo.talendcomp.elasticsearch;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,12 +10,8 @@ import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.update.UpdateRequest;
-/*
 import org.elasticsearch.common.bytes.BytesArray;
 import org.elasticsearch.common.bytes.BytesReference;
-*/
-import org.elasticsearch.common.xcontent.XContentBuilder;
-import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.common.xcontent.XContentType;
 
 public class IndexOutput {
@@ -49,7 +43,7 @@ public class IndexOutput {
 			throw new Exception("Add document for delete failed: Key cannot be null");
 		}
 		String id = String.valueOf(key);
-		DeleteRequest deleteRequest = new DeleteRequest(index, objectType, id);
+		DeleteRequest deleteRequest = new DeleteRequest(index, id);
 		if (bulkRequest == null) {
 			bulkRequest = new BulkRequest();
 		}
@@ -70,17 +64,12 @@ public class IndexOutput {
 		if (json == null) {
 			throw new Exception("Add document for upsert failed: Json content cannot be null");
 		}
-		XContentBuilder insertContentBuilder = XContentFactory.jsonBuilder();
-		XContentBuilder updateContentBuilder = XContentFactory.jsonBuilder();
 		String id = String.valueOf(key);
-//		BytesReference br = createBytesReferences(json);
-		InputStream br = createInputStream(json);
-		insertContentBuilder.rawValue(br, XContentType.JSON);
-		IndexRequest indexRequest = new IndexRequest(index, objectType, id)
-				.source(insertContentBuilder);
-		updateContentBuilder.rawValue(br, XContentType.JSON);
-		UpdateRequest updateRequest = new UpdateRequest(index, objectType, id)
-				.doc(updateContentBuilder)
+		BytesReference br = createBytesReferences(json);
+		IndexRequest indexRequest = new IndexRequest(index)
+				.source(br, XContentType.JSON).id(id);
+		UpdateRequest updateRequest = new UpdateRequest(index, id)
+				.doc(br, XContentType.JSON)
 				.upsert(indexRequest);
 		if (bulkRequest == null) {
 			bulkRequest = new BulkRequest();
@@ -89,7 +78,7 @@ public class IndexOutput {
 		currentRowNum++;
 		countUpserted++;
 	}
-/*	
+	
 	private BytesReference createBytesReferences(Object value) {
 		if (value instanceof String) {
 			byte[] array = ((String) value).getBytes(Charset.forName("UTF-8"));
@@ -101,19 +90,7 @@ public class IndexOutput {
 			return null;
 		}
 	}
-*/	
-	private InputStream createInputStream(Object value) {
-		if (value instanceof String) {
-			byte[] array = ((String) value).getBytes(Charset.forName("UTF-8"));
-			return new ByteArrayInputStream(array);
-		} else if (value != null) {
-			byte[] array = value.toString().getBytes(Charset.forName("UTF-8"));
-			return new ByteArrayInputStream(array);
-		} else {
-			return null;
-		}
-	}
-	
+
 	public void executeBulk() throws Exception {
 		executeBulk(false);
 	}

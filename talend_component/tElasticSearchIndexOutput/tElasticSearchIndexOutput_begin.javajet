@@ -31,7 +31,7 @@
 	String password = ElementParameterParser.getValue(node, "__PASSWORD__");
 	boolean log4jEnabled = "true".equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 	String cfile = ElementParameterParser.getValue(node, "__CERTIFICATE_FILE__");
-	if (cfile == null || cfile.trim().isEmpty()) {
+	if (cfile == null || cfile.trim().isEmpty() || encrypted == false) {
 		cfile = "null";
 	}
 %>
