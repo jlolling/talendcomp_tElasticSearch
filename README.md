@@ -1,5 +1,4 @@
-# talendcomp_tElasticSearch
-Talend components to work with ElasticSearch.
+# Talend components to work with ElasticSearch.
 ## tElasticSearchIndexOutput: Feed an index with json documents.
 The incoming schema expects some fixed columns (you will get them from the component schema):
 key - the id of the object
