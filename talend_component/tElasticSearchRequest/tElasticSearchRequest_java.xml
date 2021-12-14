@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <COMPONENT> 
-  <HEADER AUTHOR="Jan Lolling" COMPATIBILITY="ALL" DATA_AUTO_PROPAGATE="false" HAS_CONDITIONAL_OUTPUTS="false" PLATEFORM="ALL" RELEASE_DATE="20210901" SERIAL="" STARTABLE="true" STATUS="PROD" VERSION="3.2" LOG4J_ENABLED="true"> 
+  <HEADER AUTHOR="Jan Lolling" COMPATIBILITY="ALL" DATA_AUTO_PROPAGATE="false" HAS_CONDITIONAL_OUTPUTS="false" PLATEFORM="ALL" RELEASE_DATE="20211214" SERIAL="" STARTABLE="true" STATUS="PROD" VERSION="3.3" LOG4J_ENABLED="true"> 
     <SIGNATURE/> 
   </HEADER>  
   <FAMILIES> 
@@ -73,28 +73,44 @@
     </PARAMETER> 
   </PARAMETERS>  
   <ADVANCED_PARAMETERS> 
-    <PARAMETER NAME="RELEASE_LABEL_20210901" FIELD="LABEL" COLOR="0;0;0" NUM_ROW="900">
-      <DEFAULT>Release: 3.2 build at: 20210901</DEFAULT>
+    <PARAMETER NAME="RELEASE_LABEL_20211214" FIELD="LABEL" COLOR="0;0;0" NUM_ROW="900">
+      <DEFAULT>Release: 3.3 build at: 20211214</DEFAULT>
     </PARAMETER>
   </ADVANCED_PARAMETERS>  
   <CODEGENERATION> 
     <IMPORTS> 
-      <IMPORT NAME="jlo-talendcomp-elasticsearch" MODULE="jlo-talendcomp-elasticsearch-3.2.jar" MVN="mvn:org.talend.libraries/jlo-talendcomp-elasticsearch-3.2/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="ajlo-talendcomp-elasticsearch" MODULE="ajlo-talendcomp-elasticsearch-3.3.jar" MVN="mvn:org.talend.libraries/ajlo-talendcomp-elasticsearch-3.3/6.0.0-SNAPSHOT" REQUIRED="true"/>
       <IMPORT NAME="elasticsearch-rest-high-level-client" MODULE="elasticsearch-rest-high-level-client-7.14.1.jar" MVN="mvn:org.talend.libraries/elasticsearch-rest-high-level-client-7.14.1/6.0.0-SNAPSHOT" REQUIRED="true"/>
       <IMPORT NAME="elasticsearch" MODULE="elasticsearch-7.14.1.jar" MVN="mvn:org.talend.libraries/elasticsearch-7.14.1/6.0.0-SNAPSHOT" REQUIRED="true"/>
       <IMPORT NAME="elasticsearch-core" MODULE="elasticsearch-core-7.14.1.jar" MVN="mvn:org.talend.libraries/elasticsearch-core-7.14.1/6.0.0-SNAPSHOT" REQUIRED="true"/>
       <IMPORT NAME="elasticsearch-secure-sm" MODULE="elasticsearch-secure-sm-7.14.1.jar" MVN="mvn:org.talend.libraries/elasticsearch-secure-sm-7.14.1/6.0.0-SNAPSHOT" REQUIRED="true"/>
       <IMPORT NAME="elasticsearch-x-content" MODULE="elasticsearch-x-content-7.14.1.jar" MVN="mvn:org.talend.libraries/elasticsearch-x-content-7.14.1/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="snakeyaml" MODULE="snakeyaml-1.26.jar" MVN="mvn:org.talend.libraries/snakeyaml-1.26/6.0.0-SNAPSHOT" REQUIRED="true"/>
       <IMPORT NAME="jackson-dataformat-smile" MODULE="jackson-dataformat-smile-2.10.4.jar" MVN="mvn:org.talend.libraries/jackson-dataformat-smile-2.10.4/6.0.0-SNAPSHOT" REQUIRED="true"/>
       <IMPORT NAME="jackson-dataformat-yaml" MODULE="jackson-dataformat-yaml-2.10.4.jar" MVN="mvn:org.talend.libraries/jackson-dataformat-yaml-2.10.4/6.0.0-SNAPSHOT" REQUIRED="true"/>
       <IMPORT NAME="jackson-dataformat-cbor" MODULE="jackson-dataformat-cbor-2.10.4.jar" MVN="mvn:org.talend.libraries/jackson-dataformat-cbor-2.10.4/6.0.0-SNAPSHOT" REQUIRED="true"/>
       <IMPORT NAME="elasticsearch-geo" MODULE="elasticsearch-geo-7.14.1.jar" MVN="mvn:org.talend.libraries/elasticsearch-geo-7.14.1/6.0.0-SNAPSHOT" REQUIRED="true"/>
       <IMPORT NAME="lucene-core" MODULE="lucene-core-8.9.0.jar" MVN="mvn:org.talend.libraries/lucene-core-8.9.0/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="lucene-analyzers-common" MODULE="lucene-analyzers-common-8.9.0.jar" MVN="mvn:org.talend.libraries/lucene-analyzers-common-8.9.0/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="lucene-backward-codecs" MODULE="lucene-backward-codecs-8.9.0.jar" MVN="mvn:org.talend.libraries/lucene-backward-codecs-8.9.0/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="lucene-grouping" MODULE="lucene-grouping-8.9.0.jar" MVN="mvn:org.talend.libraries/lucene-grouping-8.9.0/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="lucene-highlighter" MODULE="lucene-highlighter-8.9.0.jar" MVN="mvn:org.talend.libraries/lucene-highlighter-8.9.0/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="lucene-join" MODULE="lucene-join-8.9.0.jar" MVN="mvn:org.talend.libraries/lucene-join-8.9.0/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="lucene-memory" MODULE="lucene-memory-8.9.0.jar" MVN="mvn:org.talend.libraries/lucene-memory-8.9.0/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="lucene-misc" MODULE="lucene-misc-8.9.0.jar" MVN="mvn:org.talend.libraries/lucene-misc-8.9.0/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="lucene-queries" MODULE="lucene-queries-8.9.0.jar" MVN="mvn:org.talend.libraries/lucene-queries-8.9.0/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="lucene-queryparser" MODULE="lucene-queryparser-8.9.0.jar" MVN="mvn:org.talend.libraries/lucene-queryparser-8.9.0/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="lucene-sandbox" MODULE="lucene-sandbox-8.9.0.jar" MVN="mvn:org.talend.libraries/lucene-sandbox-8.9.0/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="lucene-spatial-extras" MODULE="lucene-spatial-extras-8.9.0.jar" MVN="mvn:org.talend.libraries/lucene-spatial-extras-8.9.0/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="lucene-spatial3d" MODULE="lucene-spatial3d-8.9.0.jar" MVN="mvn:org.talend.libraries/lucene-spatial3d-8.9.0/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="lucene-suggest" MODULE="lucene-suggest-8.9.0.jar" MVN="mvn:org.talend.libraries/lucene-suggest-8.9.0/6.0.0-SNAPSHOT" REQUIRED="true"/>
       <IMPORT NAME="elasticsearch-cli" MODULE="elasticsearch-cli-7.14.1.jar" MVN="mvn:org.talend.libraries/elasticsearch-cli-7.14.1/6.0.0-SNAPSHOT" REQUIRED="true"/>
       <IMPORT NAME="jopt-simple" MODULE="jopt-simple-5.0.2.jar" MVN="mvn:org.talend.libraries/jopt-simple-5.0.2/6.0.0-SNAPSHOT" REQUIRED="true"/>
       <IMPORT NAME="hppc" MODULE="hppc-0.8.1.jar" MVN="mvn:org.talend.libraries/hppc-0.8.1/6.0.0-SNAPSHOT" REQUIRED="true"/>
       <IMPORT NAME="lz4-java" MODULE="lz4-java-1.8.0.jar" MVN="mvn:org.talend.libraries/lz4-java-1.8.0/6.0.0-SNAPSHOT" REQUIRED="true"/>
       <IMPORT NAME="joda-time" MODULE="joda-time-2.10.10.jar" MVN="mvn:org.talend.libraries/joda-time-2.10.10/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="t-digest" MODULE="t-digest-3.2.jar" MVN="mvn:org.talend.libraries/t-digest-3.2/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="HdrHistogram" MODULE="HdrHistogram-2.1.9.jar" MVN="mvn:org.talend.libraries/HdrHistogram-2.1.9/6.0.0-SNAPSHOT" REQUIRED="true"/>
       <IMPORT NAME="jna-5.7.0" MODULE="jna-5.7.0-1.jar" MVN="mvn:org.talend.libraries/jna-5.7.0-1/6.0.0-SNAPSHOT" REQUIRED="true"/>
       <IMPORT NAME="elasticsearch-rest-client" MODULE="elasticsearch-rest-client-7.14.1.jar" MVN="mvn:org.talend.libraries/elasticsearch-rest-client-7.14.1/6.0.0-SNAPSHOT" REQUIRED="true"/>
       <IMPORT NAME="httpclient" MODULE="httpclient-4.5.10.jar" MVN="mvn:org.talend.libraries/httpclient-4.5.10/6.0.0-SNAPSHOT" REQUIRED="true"/>
@@ -109,13 +125,9 @@
       <IMPORT NAME="rank-eval-client" MODULE="rank-eval-client-7.14.1.jar" MVN="mvn:org.talend.libraries/rank-eval-client-7.14.1/6.0.0-SNAPSHOT" REQUIRED="true"/>
       <IMPORT NAME="lang-mustache-client" MODULE="lang-mustache-client-7.14.1.jar" MVN="mvn:org.talend.libraries/lang-mustache-client-7.14.1/6.0.0-SNAPSHOT" REQUIRED="true"/>
       <IMPORT NAME="compiler" MODULE="compiler-0.9.6.jar" MVN="mvn:org.talend.libraries/compiler-0.9.6/6.0.0-SNAPSHOT" REQUIRED="true"/>
-      <IMPORT NAME="log4j-api" MODULE="log4j-api-2.12.1.jar" MVN="mvn:org.talend.libraries/log4j-api-2.12.1/6.0.0-SNAPSHOT" REQUIRED="true"/>
-      <IMPORT NAME="log4j-core" MODULE="log4j-core-2.12.1.jar" MVN="mvn:org.talend.libraries/log4j-core-2.12.1/6.0.0-SNAPSHOT" REQUIRED="true"/>
-      <IMPORT NAME="jackson-databind" MODULE="jackson-databind-2.9.10.1.jar" MVN="mvn:org.talend.libraries/jackson-databind-2.9.10.1/6.0.0-SNAPSHOT" REQUIRED="true"/>
-      <IMPORT NAME="jackson-annotations" MODULE="jackson-annotations-2.9.10.jar" MVN="mvn:org.talend.libraries/jackson-annotations-2.9.10/6.0.0-SNAPSHOT" REQUIRED="true"/>
-      <IMPORT NAME="jackson-core" MODULE="jackson-core-2.9.10.jar" MVN="mvn:org.talend.libraries/jackson-core-2.9.10/6.0.0-SNAPSHOT" REQUIRED="true"/>
-      <IMPORT NAME="json-path" MODULE="json-path-2.4.0.jar" MVN="mvn:org.talend.libraries/json-path-2.4.0/6.0.0-SNAPSHOT" REQUIRED="true"/>
-      <IMPORT NAME="slf4j-api" MODULE="slf4j-api-1.7.25.jar" MVN="mvn:org.talend.libraries/slf4j-api-1.7.25/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="jackson-databind" MODULE="jackson-databind-2.10.0.jar" MVN="mvn:org.talend.libraries/jackson-databind-2.10.0/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="jackson-annotations" MODULE="jackson-annotations-2.10.0.jar" MVN="mvn:org.talend.libraries/jackson-annotations-2.10.0/6.0.0-SNAPSHOT" REQUIRED="true"/>
+      <IMPORT NAME="jackson-core" MODULE="jackson-core-2.10.0.jar" MVN="mvn:org.talend.libraries/jackson-core-2.10.0/6.0.0-SNAPSHOT" REQUIRED="true"/>
     </IMPORTS> 
   </CODEGENERATION>  
   <RETURNS> 

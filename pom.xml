@@ -4,8 +4,8 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>de.jlo.talendcomp</groupId>
-	<artifactId>jlo-talendcomp-elasticsearch</artifactId>
-	<version>3.2</version>
+	<artifactId>ajlo-talendcomp-elasticsearch</artifactId>
+	<version>3.3</version>
 	<packaging>jar</packaging>
 
 	<name>jlo-talendcomp-elasticsearch</name>
@@ -26,6 +26,7 @@
 			<groupId>org.elasticsearch.client</groupId>
 			<artifactId>elasticsearch-rest-high-level-client</artifactId>
 			<version>7.14.1</version>
+<!--
 			<exclusions>
 				<exclusion>
 					<groupId>org.apache.lucene</groupId>
@@ -91,10 +92,12 @@
 					<groupId>com.vividsolutions</groupId>
 					<artifactId>jts</artifactId>
 				</exclusion>
+
 				<exclusion>
 					<groupId>org.yaml</groupId>
 					<artifactId>snakeyaml</artifactId>
 				</exclusion>
+
 				<exclusion>
 					<groupId>org.hdrhistogram</groupId>
 					<artifactId>HdrHistogram</artifactId>
@@ -104,36 +107,24 @@
 					<artifactId>t-digest</artifactId>
 				</exclusion>
 			</exclusions>
+-->
 		</dependency>
 		<dependency>
 		    <groupId>org.apache.logging.log4j</groupId>
 		    <artifactId>log4j-api</artifactId>
-		    <version>2.12.1</version>
+		    <version>2.16.0</version>
+		    <scope>provided</scope>
 		</dependency>
 		<dependency>
 		    <groupId>org.apache.logging.log4j</groupId>
 		    <artifactId>log4j-core</artifactId>
-		    <version>2.12.1</version>
+		    <version>2.16.0</version>
+		    <scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
-			<version>2.9.10.1</version>
-		</dependency>
-		<dependency>
-			<groupId>com.jayway.jsonpath</groupId>
-			<artifactId>json-path</artifactId>
-			<version>2.4.0</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.ow2.asm</groupId>
-					<artifactId>asm</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>net.minidev</groupId>
-					<artifactId>json-smart</artifactId>
-				</exclusion>
-			</exclusions>
+			<version>2.10.0</version>
 		</dependency>
 	</dependencies>
 
