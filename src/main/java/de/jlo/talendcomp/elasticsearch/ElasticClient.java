@@ -18,6 +18,7 @@ import java.util.StringTokenizer;
 import javax.net.ssl.SSLContext;
 
 import org.apache.http.Header;
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpHost;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
@@ -26,11 +27,8 @@ import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.ssl.SSLContexts;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
-import org.elasticsearch.client.RequestOptions;
-import org.elasticsearch.client.RestClient;
-import org.elasticsearch.client.RestClientBuilder;
+import org.elasticsearch.client.*;
 import org.elasticsearch.client.RestClientBuilder.HttpClientConfigCallback;
-import org.elasticsearch.client.RestHighLevelClient;
 
 public class ElasticClient {
 	
@@ -142,7 +140,8 @@ public class ElasticClient {
 		        		.setConnectTimeout(timeout)
                         .setRedirectsEnabled(true)
                         .setRelativeRedirectsAllowed(true)
-		        		.setContentCompressionEnabled(true);
+		        		.setContentCompressionEnabled(true)
+						;
 		    }
 		    
 		});
@@ -173,7 +172,9 @@ public class ElasticClient {
 			defaultHeaders[1] = new BasicHeader("Cache-Control", "no-cache");
 		}
 		rcb.setDefaultHeaders(defaultHeaders);
-		highLevelClient = new RestHighLevelClient(rcb);
+
+		highLevelClient = new RestHighLevelClientBuilder(rcb.build())
+				.setApiCompatibilityMode(true).build();
 		lowLevelClient = highLevelClient.getLowLevelClient();
 	}
 	
